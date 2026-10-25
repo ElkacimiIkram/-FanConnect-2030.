@@ -1,0 +1,50 @@
+# =========================
+# FanConnect 2030 - Root
+# =========================
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Logs
+logs/
+*.log
+
+# Docker volumes (local)
+docker/volumes/
+
+# Build artifacts
+dist/
+build/
+out/
+target/
+
+# Node
+node_modules/
+
+# Secrets
+*.pem
+*.key
+secrets/
+
+# Pièces d'identité et documents café (CIN, registre, photos)
+backend/uploads/
+
+# Fichiers temporaires Office
+~$*

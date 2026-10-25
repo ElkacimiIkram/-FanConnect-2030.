@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Soutenance PFE — FanConnect 2030</title>
+<style>
+  :root {
+    --dark: #1B2420; --cream: #F1EDE3; --beige: #E8DFC8; --ink: #1B2420;
+    --body: #3B3F3A; --muted: #7A7F76; --forest: #3B5D3A; --forest-deep: #2C4A2B;
+    --moss: #7A9A6A; --terra: #C26A33; --title-dark: #EFE9D9; --sub-dark: #C9C4B4; --white: #fff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #111; font-family: Calibri, "Segoe UI", sans-serif; overflow: hidden; }
+  #stage { height: 100%; display: flex; align-items: center; justify-content: center; }
+  .deck { width: 1333px; height: 750px; background: var(--cream); position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.45); transform-origin: center; }
+  .slide { display: none; position: absolute; inset: 0; padding: 28px 70px 42px; }
+  .slide.on { display: block; }
+  .slide.dark { background: var(--dark); color: var(--title-dark); }
+  .slide.forest { background: var(--forest-deep); color: var(--title-dark); }
+  .bar { position: absolute; left: 0; top: 0; width: 18px; height: 100%; background: var(--terra); }
+  .eyebrow { font-size: 13px; letter-spacing: 2.2px; color: var(--muted); text-transform: uppercase; }
+  .num { position: absolute; right: 70px; top: 28px; font-size: 13px; letter-spacing: 1.5px; color: var(--muted); }
+  h1 { font-family: Georgia, serif; font-size: 32px; font-weight: 400; margin: 12px 0 16px; line-height: 1.15; }
+  h1 em { font-style: italic; color: var(--forest); }
+  h1 .terra { font-style: italic; color: var(--terra); }
+  p.lead { font-size: 17px; color: var(--body); line-height: 1.45; margin-bottom: 16px; }
+  .footer { position: absolute; left: 70px; right: 70px; bottom: 18px; border-top: 1px solid #C9C4B4; padding-top: 8px; font-size: 11px; letter-spacing: .5px; color: var(--muted); }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: 1fr 1fr 1fr; }
+  .g4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .g5 { grid-template-columns: repeat(5, 1fr); }
+  .card { background: var(--white); border-radius: 8px; padding: 16px 18px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .card.green { background: var(--forest); color: var(--title-dark); }
+  .card.deep { background: var(--forest-deep); color: var(--title-dark); }
+  .kicker { font-size: 12px; letter-spacing: 1.3px; color: var(--terra); text-transform: uppercase; margin-bottom: 6px; }
+  .card.green .kicker, .card.deep .kicker { color: var(--moss); }
+  .card h3 { font-family: Georgia, serif; font-size: 18px; font-weight: 400; margin-bottom: 8px; }
+  .card p { font-size: 15px; color: var(--body); line-height: 1.4; }
+  .card.green p, .card.deep p { color: var(--sub-dark); }
+  .chip { display: inline-block; background: var(--forest-deep); color: var(--title-dark); font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th { background: var(--forest); color: #fff; text-align: left; padding: 10px 12px; }
+  td { padding: 11px 12px; }
+  tr:nth-child(even) td { background: var(--beige); }
+  tr:nth-child(odd) td { background: #fff; }
+  .miss { color: var(--terra); }
+  img.shot { width: 100%; height: 205px; object-fit: cover; display: block; }
+  .cap { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .row { display: flex; gap: 16px; }
+  #hud { position: fixed; left: 16px; bottom: 12px; color: #aaa; font-size: 12px; z-index: 9; }
+  #notes { display: none; position: fixed; right: 16px; bottom: 16px; max-width: 420px; background: #1B2420; color: #EFE9D9; padding: 14px 16px; border-radius: 8px; font-size: 13px; line-height: 1.4; z-index: 10; }
+  #notes.show { display: block; }
+  @media print {
+    html, body { overflow: visible; background: #fff; }
+    #stage { display: block; height: auto; }
+    .deck { transform: none !important; box-shadow: none; page-break-after: always; }
+    .slide { display: block !important; position: relative; page-break-after: always; }
+    #hud, #notes { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="stage"><div class="deck" id="deck">
+
+<section class="slide dark on" data-notes="Saluer le jury. Une phrase : FanConnect relie match, café et réservation, stage GM-Soft Béni Mellal.">
+  <div class="bar"></div>
+  <p class="eyebrow" style="color:#A7A79A">INSTITUT DE GÉNIE APPLIQUÉ · CYCLE INGÉNIEUR 5DLTI</p>
+  <div class="chip" style="margin:16px 0">SOUTENANCE DE PFE · 2025 / 2026</div>
+  <h1 style="font-size:44px;color:#EFE9D9;margin:0 0 12px">FanConnect 2030</h1>
+  <p style="font-size:18px;color:#C9C4B4;max-width:640px;line-height:1.4">Plateforme intelligente de réservation de cafés<br>pour regarder les matchs — Coupe du Monde 2030</p>
+  <img src="ppt-assets/01-accueil-hero_16x9.jpg" alt="" style="position:absolute;right:70px;top:115px;width:445px;height:250px;object-fit:cover">
+  <div style="position:absolute;left:70px;top:455px;right:540px;border-top:1px solid #2A3530;padding-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+    <div><div class="kicker" style="color:#A7A79A">Présenté par</div><strong>Kassimi</strong></div>
+    <div><div class="kicker" style="color:#A7A79A">Encadrant</div><strong>M. Bouchib Riyami</strong></div>
+    <div><div class="kicker" style="color:#A7A79A">Organisme</div><strong>GM-Soft · Béni Mellal</strong></div>
+  </div>
+  <p class="footer">Stage Pôle Développement · Année universitaire 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="40 secondes. Nom, siège Béni Mellal, solutions GM-CAFE, ton rôle full-stack + IA.">
+  <p class="eyebrow">ENTREPRISE D'ACCUEIL</p><span class="num">02 / 17</span>
+  <h1>GM-Soft — German Moroccan Software</h1>
+  <div class="row">
+    <div class="card deep" style="flex:0.85">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+        <div style="width:56px;height:56px;border-radius:10px;background:var(--forest);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:18px">GM</div>
+        <div><strong style="font-size:20px">GM-SOFT</strong><div style="color:var(--moss);font-size:12px">Made in Germany</div></div>
+      </div>
+      <p>SSII maroco-allemande. Conception, intégration et évolution de logiciels métier (ERP, POS, café, hôtel, web / mobile).</p>
+    </div>
+    <div class="grid g2" style="flex:1.4">
+      <div class="card"><div class="kicker">Siège</div><p>Béni Mellal — Bd Hassan II</p></div>
+      <div class="card"><div class="kicker">Sites</div><p>Casa, Rabat, Allemagne</p></div>
+      <div class="card"><div class="kicker">Création</div><p>2014 · SARL · +10 ans</p></div>
+      <div class="card"><div class="kicker">Solutions</div><p>GM-ERP, GM-POS, GM-CAFE, GM-HOTEL</p></div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><div class="kicker">Équipe d'accueil</div><h3>Pôle Développement</h3><p>Lien métier GM-CAFE</p></div>
+    <div class="card green"><div class="kicker">Mon rôle</div><p>Conception, développement full-stack, service IA d'occupation, documentation du PFE.</p></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Contexte métier. CDM 2030, cafés saturés. Lien GM-CAFE.">
+  <p class="eyebrow">CONTEXTE DU PROJET</p><span class="num">03 / 17</span>
+  <h1>Le match se joue aussi <span class="terra">au café.</span></h1>
+  <p class="lead">À l'approche de la Coupe du Monde 2030 au Maroc, les supporters cherchent un lieu proche et disponible. Les cafés n'ont pas d'outil pour gérer réservations, occupation et jour de match.</p>
+  <div class="grid g4">
+    <div class="card" style="text-align:center"><h3 style="color:var(--forest);font-size:24px">2030</h3><p>Coupe du Monde au Maroc</p></div>
+    <div class="card" style="text-align:center"><h3 style="color:var(--forest);font-size:24px">3 rôles</h3><p>Fan, Owner, Admin</p></div>
+    <div class="card" style="text-align:center"><h3 style="color:var(--forest);font-size:24px">1 plateforme</h3><p>Match + lieu + paiement + IA</p></div>
+    <div class="card" style="text-align:center"><h3 style="color:var(--forest);font-size:24px">4 mois</h3><p>Stage GM-Soft</p></div>
+  </div>
+  <div class="card deep" style="margin-top:16px"><p style="font-family:Georgia,serif;font-size:18px;font-style:italic;color:#EFE9D9">FanConnect 2030 prolonge GM-CAFE : digitaliser le café le jour du match.</p></div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Lire la problématique une fois.">
+  <p class="eyebrow">PROBLÉMATIQUE</p><span class="num">04 / 17</span>
+  <h1>La question du PFE</h1>
+  <div class="card deep" style="margin-bottom:16px">
+    <p style="font-family:Georgia,serif;font-size:20px;font-style:italic;color:#EFE9D9;line-height:1.4">Comment concevoir une plateforme fiable, sécurisée et intelligente permettant aux supporters de réserver un lieu adapté pour un match, tout en aidant les cafés à anticiper l'affluence — dans le contexte de la CDM 2030 ?</p>
+  </div>
+  <div class="grid g3">
+    <div class="card"><h3 style="color:var(--forest)">Métier</h3><p>Unifier match, lieu, table et paiement dans un seul parcours.</p></div>
+    <div class="card"><h3 style="color:var(--forest)">Occupation</h3><p>Estimer l'affluence avant le coup d'envoi.</p></div>
+    <div class="card"><h3 style="color:var(--forest)">Architecture</h3><p>Séparer API métier, interface et service d'apprentissage.</p></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Périmètre net.">
+  <p class="eyebrow">OBJECTIFS</p><span class="num">05 / 17</span>
+  <h1>Un objectif général, quatre cibles.</h1>
+  <div class="card" style="margin-bottom:14px"><p>Concevoir et réaliser une plateforme web sécurisée de réservation de cafés pour le jour de match, avec recommandation géolocalisée et prédiction d'occupation.</p></div>
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card"><div class="kicker">01</div><h3>Parcours fan</h3><p>Match → lieu → table → paiement → QR.</p></div>
+    <div class="card"><div class="kicker">02</div><h3>Outil owner</h3><p>Établissement, occupation, check-in.</p></div>
+    <div class="card"><div class="kicker">03</div><h3>Pilotage admin</h3><p>Validation, analytics, compétitions.</p></div>
+    <div class="card"><div class="kicker">04</div><h3>IA utile</h3><p>Prédiction + recommandation.</p></div>
+  </div>
+  <div class="grid g2">
+    <div class="card green"><div class="kicker">Dans le périmètre</div><p>Web SPA, API REST, Stripe test, IA, Docker, 3 rôles.</p></div>
+    <div class="card"><div class="kicker">Hors périmètre</div><p>Mobile native, Stripe live, billetterie stade.</p></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="TheFork ignore le jour de match.">
+  <p class="eyebrow">ANALYSE DES BESOINS</p><span class="num">06 / 17</span>
+  <h1>Le trou : match + café + IA.</h1>
+  <table>
+    <thead><tr><th>Solution</th><th>Ce qu'elle fait</th><th>Ce qui manque</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TheFork / OpenTable</strong></td><td>Réservation resto</td><td class="miss">Pas de calendrier sport</td></tr>
+      <tr><td><strong>Billetterie stade</strong></td><td>Tickets d'événement</td><td class="miss">Ignore les cafés de diffusion</td></tr>
+      <tr><td><strong>WhatsApp / Facebook</strong></td><td>Simple, déjà adopté</td><td class="miss">Pas d'occupation ni de paiement</td></tr>
+      <tr><td><strong>Sites de cafés isolés</strong></td><td>Identité du lieu</td><td class="miss">Pas de vision multi-établissements</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:16px;font-family:Georgia,serif;font-style:italic;font-size:17px;color:var(--forest-deep)">Aucune offre n'unit calendrier football, géolocalisation, réservation, paiement et occupation prédictive.</p>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="EF04 à EF07 sont le cœur.">
+  <p class="eyebrow">FONCTIONNALITÉS</p><span class="num">07 / 17</span>
+  <h1>Neuf exigences, trois acteurs.</h1>
+  <div class="row">
+    <div style="flex:1.7">
+      <table>
+        <thead><tr><th>ID</th><th>Fonctionnalité</th><th>Acteur</th></tr></thead>
+        <tbody>
+          <tr><td>EF01</td><td>Inscription et authentification JWT</td><td>Tous</td></tr>
+          <tr><td>EF02</td><td>Match Center Coupe du Monde</td><td>Fan</td></tr>
+          <tr><td>EF03</td><td>Recherche et filtrage des établissements</td><td>Fan</td></tr>
+          <tr><td>EF04</td><td>Wizard de réservation multi-étapes</td><td>Fan</td></tr>
+          <tr><td>EF05</td><td>Paiement en ligne Stripe</td><td>Fan</td></tr>
+          <tr><td>EF06</td><td>Recommandations (proximité + affluence)</td><td>Fan</td></tr>
+          <tr><td>EF07</td><td>Prédiction d'occupation (IA)</td><td>Fan / Owner</td></tr>
+          <tr><td>EF08</td><td>Gestion business, occupation, check-in QR</td><td>Owner</td></tr>
+          <tr><td>EF09</td><td>Modération, analytics, compétitions</td><td>Admin</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="flex:.85">
+      <div class="kicker">ENF</div>
+      <p><strong style="color:var(--forest)">Sécurité</strong><br>JWT, rôles, secrets .env</p><br>
+      <p><strong style="color:var(--forest)">Performance</strong><br>API métier &lt; 2 s</p><br>
+      <p><strong style="color:var(--forest)">Maintenabilité</strong><br>Couches, Flyway, OpenAPI</p><br>
+      <p><strong style="color:var(--forest)">Portabilité</strong><br>Docker Compose</p><br>
+      <p><strong style="color:var(--forest)">Paiement</strong><br>PCI-DSS via Stripe</p>
+    </div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Un User réserve une table d'un Business pour un FootballMatch.">
+  <p class="eyebrow">CONCEPTION UML</p><span class="num">08 / 17</span>
+  <h1>Trois acteurs, un modèle métier.</h1>
+  <div class="row">
+    <div style="flex:1.15"><img src="diagrams/01-cas-utilisation.png" alt="" style="width:100%;max-height:500px;object-fit:contain"></div>
+    <div style="flex:.9" class="grid">
+      <div class="card"><strong style="color:var(--forest)">User</strong> — FAN / OWNER / ADMIN</div>
+      <div class="card"><strong style="color:var(--forest)">Business</strong> — Café, capacité, statut</div>
+      <div class="card"><strong style="color:var(--forest)">FootballMatch</strong> — Compétition, kickoff</div>
+      <div class="card"><strong style="color:var(--forest)">Reservation</strong> — Statut, ticket QR</div>
+      <div class="card"><strong style="color:var(--forest)">Payment</strong> — Stripe, commission</div>
+      <div class="card"><strong style="color:var(--forest)">Occupancy</strong> — Live + snapshots IA</div>
+    </div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Navigateur → Spring → Postgres. Python pour l'IA. Stripe jamais en base.">
+  <p class="eyebrow">ARCHITECTURE</p><span class="num">09 / 17</span>
+  <h1>3-tiers + microservice IA.</h1>
+  <div class="row">
+    <div style="flex:1.5" class="grid">
+      <div class="card"><h3>Présentation</h3><p>React 18 · Vite · Tailwind — SPA Fan / Owner / Admin</p></div>
+      <div class="card"><h3>Application</h3><p>Spring Boot 3 · Java 21 — REST, JWT, JPA, OpenAPI</p></div>
+      <div class="card"><h3>Données</h3><p>PostgreSQL 16 · Flyway — users, matchs, bookings</p></div>
+    </div>
+    <div style="flex:.9" class="grid">
+      <div class="card green"><div class="kicker">Service IA</div><h3>FastAPI · Python</h3><p>Random Forest · /predict · /train</p></div>
+      <div class="card"><div class="kicker">Intégrations</div><p>Stripe · Docker · Nginx</p></div>
+    </div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Spring pour la sécurité ; FastAPI pour le ML.">
+  <p class="eyebrow">TECHNOLOGIES UTILISÉES</p><span class="num">10 / 17</span>
+  <h1>Open source, niveau entreprise.</h1>
+  <div class="grid g5" id="stack"></div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Preuve visuelle. La démo montrera le parcours.">
+  <p class="eyebrow">RÉALISATION</p><span class="num">11 / 17</span>
+  <h1>Découvrir, réserver, piloter.</h1>
+  <div class="grid g2">
+    <div><img class="shot" src="ppt-assets/01-accueil-hero_16x9.jpg" alt=""><div class="cap">Accueil</div></div>
+    <div><img class="shot" src="ppt-assets/08-booking-wizard_16x9.jpg" alt=""><div class="cap">Wizard de réservation</div></div>
+    <div><img class="shot" src="ppt-assets/09-owner-dashboard_16x9.jpg" alt=""><div class="cap">Dashboard Owner</div></div>
+    <div><img class="shot" src="ppt-assets/05-admin-dashboard_16x9.jpg" alt=""><div class="cap">Dashboard Admin</div></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Honnêteté : données synthétiques. Fallback si Python down.">
+  <p class="eyebrow">INTELLIGENCE ARTIFICIELLE</p><span class="num">12 / 17</span>
+  <h1>Prédire l'affluence, recommander le lieu.</h1>
+  <div class="grid g2">
+    <div class="card"><h3 style="color:var(--forest)">Modèle</h3><p>Random Forest. Features : occupation, historique, horizon kickoff, fraîcheur du report owner.</p></div>
+    <div class="card"><h3 style="color:var(--forest)">Sorties</h3><p>Prédictions 1 h / 2 h / coup d'envoi. Risque LOW / MEDIUM / HIGH.</p></div>
+    <div class="card"><h3 style="color:var(--forest)">Recommandation</h3><p>Rayon 5 → 10 → 20 km. Score distance × occupation.</p></div>
+    <div class="card"><h3 style="color:var(--forest)">FanBot</h3><p>Intentions match / café / réservation. Fallback déterministe.</p></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide forest" data-notes="App ouverte. Comptes prêts. Carte 4242.">
+  <p class="eyebrow">DÉMONSTRATION</p>
+  <h1 style="font-size:36px;color:#EFE9D9;margin-top:40px">Parcours à montrer</h1>
+  <div class="grid g2" style="margin-top:20px">
+    <div class="card" style="background:#24332C;color:#EFE9D9"><h3>1 · Accueil → Match Center</h3></div>
+    <div class="card" style="background:#24332C;color:#EFE9D9"><h3>2 · Lieux sur la carte + occupation</h3></div>
+    <div class="card" style="background:#24332C;color:#EFE9D9"><h3>3 · Wizard + paiement test Stripe</h3></div>
+    <div class="card" style="background:#24332C;color:#EFE9D9"><h3>4 · Dashboard Owner / Admin</h3></div>
+  </div>
+</section>
+
+<section class="slide" data-notes="Ce qui est livré, pas promis.">
+  <p class="eyebrow">RÉSULTATS</p><span class="num">14 / 17</span>
+  <h1>Un PFE livré et démontrable.</h1>
+  <div class="grid g3">
+    <div class="card green"><h3>Livré</h3><p>Full-stack 3 rôles<br>Stripe test + ticket QR<br>IA d'occupation + recos<br>Docker, Swagger, rapport</p></div>
+    <div class="card"><h3>Apports</h3><p>Architecture n-tiers<br>Sécurité JWT / Stripe<br>ML dans un produit métier<br>Lien métier GM-CAFE</p></div>
+    <div class="card"><h3>Validation</h3><p>Tests occupation / geo / paiement<br>Parcours Fan / Owner / Admin<br>Routes protégées par rôle<br>Health checks API + IA</p></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Limites assumées. Ne pas promettre une prod 2030.">
+  <p class="eyebrow">LIMITES ET PERSPECTIVES</p><span class="num">15 / 17</span>
+  <h1>Ce qui reste pour 2030.</h1>
+  <div class="grid g2">
+    <div class="card">
+      <div class="kicker">Limites</div>
+      <h3>Données IA</h3><p>Pas de saison CDM réelle — MAE à recalibrer.</p><br>
+      <h3>Paiement</h3><p>Stripe test, pas de webhooks live.</p><br>
+      <h3>Mobile</h3><p>SPA responsive, pas d'app native.</p>
+    </div>
+    <div class="card green">
+      <div class="kicker">Perspectives</div>
+      <p style="font-size:18px;color:#EFE9D9;line-height:1.8">1. FanBot conversationnel enrichi<br>2. Application mobile native<br>3. Données réelles + suivi MAE<br>4. Alertes matchs / occupation</p>
+    </div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide" data-notes="Répondre oui à la problématique.">
+  <p class="eyebrow">CONCLUSION</p><span class="num">16 / 17</span>
+  <h1>Réponse à la problématique.</h1>
+  <p class="lead">Oui : une plateforme n-tiers, sécurisée par JWT et Stripe, permet au fan de réserver un café pour un match, et au propriétaire d'anticiper l'affluence grâce à un moteur d'occupation et un Random Forest.</p>
+  <div class="grid g4">
+    <div class="card"><div class="kicker">01</div><h3>Cadrage</h3><p>GM-CAFE × CDM 2030, périmètre tenu.</p></div>
+    <div class="card"><div class="kicker">02</div><h3>Conception</h3><p>UML, 3-tiers, IA découplée.</p></div>
+    <div class="card"><div class="kicker">03</div><h3>Produit</h3><p>Trois rôles, jusqu'au QR.</p></div>
+    <div class="card green"><div class="kicker">04</div><h3>Rigueur</h3><p>Tests, Docker, honnêteté IA.</p></div>
+  </div>
+  <p class="footer">SOUTENANCE PFE · FANCONNECT 2030 · GM-SOFT · IGA 2025 / 2026</p>
+</section>
+
+<section class="slide dark" data-notes="Rester debout. Répéter la question.">
+  <div class="bar"></div>
+  <h1 style="font-size:64px;color:#EFE9D9;margin-top:120px">MERCI</h1>
+  <p style="font-family:Georgia,serif;font-style:italic;font-size:24px;color:#D48A5B;margin:8px 0 24px">Questions du jury.</p>
+  <div style="width:220px;height:1px;background:#2A3530;margin-bottom:20px"></div>
+  <p style="color:#C9C4B4;font-size:16px;line-height:1.6">FanConnect 2030 · Soutenance PFE 5DLTI<br>Présenté par Kassimi<br>Encadrant académique : M. Bouchib Riyami<br>Organisme : GM-Soft · Béni Mellal · 2025 / 2026</p>
+</section>
+
+</div></div>
+<div id="hud">← → espace  ·  N notes  ·  F plein écran</div>
+<div id="notes"></div>
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+let i = 0;
+const notesEl = document.getElementById('notes');
+const stack = [
+  ['spring-boot.png','Spring Boot','API REST'],['react.png','React 18','SPA'],
+  ['postgresql.png','PostgreSQL','SGBDR'],['python.png','Python','Modèle ML'],
+  ['fastapi.png','FastAPI','Service IA'],['stripe.png','Stripe','Paiement'],
+  ['jwt.png','JWT','Auth'],['docker.png','Docker','Déploiement'],
+  ['swagger.png','OpenAPI','Documentation'],['vite.png','Vite','Build UI'],
+];
+const stackEl = document.getElementById('stack');
+if (stackEl) stackEl.innerHTML = stack.map(([img,n,d]) =>
+  `<div class="card" style="text-align:center"><img src="tech-icons/${img}" alt="" style="width:56px;height:56px;object-fit:contain;margin:4px auto 8px"><h3 style="font-size:15px">${n}</h3><p>${d}</p></div>`).join('');
+function show(n) {
+  i = (n + slides.length) % slides.length;
+  slides.forEach((s, k) => s.classList.toggle('on', k === i));
+  notesEl.textContent = slides[i].dataset.notes || '';
+}
+function scale() {
+  const deck = document.getElementById('deck');
+  const s = Math.min(window.innerWidth / 1333, window.innerHeight / 750) * 0.98;
+  deck.style.transform = 'scale(' + s + ')';
+}
+window.addEventListener('resize', scale); scale(); show(0);
+document.addEventListener('keydown', (e) => {
+  if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)) { e.preventDefault(); show(i+1); }
+  if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)) { e.preventDefault(); show(i-1); }
+  if (e.key === 'n' || e.key === 'N') notesEl.classList.toggle('show');
+  if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen?.();
+});
+</script>
+</body>
+</html>

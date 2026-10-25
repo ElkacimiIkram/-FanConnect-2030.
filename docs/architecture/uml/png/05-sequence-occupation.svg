@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1380" width="1500" height="1380">
+  <defs>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0F9F58"/>
+    </marker>
+    <marker id="ro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="1500" height="1380" fill="#FFFFFF"/>
+  <rect width="1500" height="60" fill="#111827"/>
+  <text x="750" y="26" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#FFFFFF">Diagramme de séquence — Calcul de l'occupation</text>
+  <text x="750" y="48" text-anchor="middle" font-family="Arial" font-size="12" fill="#A7F3D0">OccupancyEngine  ·  rapport owner ≤ 15 min = vérité terrain  ·  sinon  checkedIn + 0,85×CONF + 0,60×PEND</text>
+
+  <g font-family="Arial" font-size="12" text-anchor="middle">
+    <rect x="30" y="76" width="130" height="46" rx="6" fill="#ECFDF3" stroke="#0F9F58"/>
+    <text x="95" y="104" font-weight="700" fill="#065F46">Fan / Owner</text>
+    <rect x="220" y="76" width="140" height="46" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="290" y="104" font-weight="700">Frontend</text>
+    <rect x="430" y="76" width="200" height="46" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="530" y="96" font-weight="700">OccupancyService</text>
+    <text x="530" y="112" fill="#64748B">BusinessOccupancy</text>
+    <rect x="700" y="76" width="150" height="46" rx="4" fill="#F1F5F9" stroke="#1A2332"/>
+    <text x="775" y="104" font-weight="700">PostgreSQL</text>
+    <rect x="920" y="76" width="200" height="46" rx="4" fill="#FFFBEB" stroke="#D97706"/>
+    <text x="1020" y="96" font-weight="700" fill="#9A3412">OccupancyEngine</text>
+    <text x="1020" y="112" fill="#B45309">«utility»</text>
+    <rect x="1190" y="76" width="160" height="46" rx="4" fill="#EDE9FE" stroke="#6D28D9"/>
+    <text x="1270" y="96" font-weight="700" fill="#6D28D9">Service IA</text>
+    <text x="1270" y="112" fill="#7C3AED">RandomForest</text>
+  </g>
+  <g stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="4 6">
+    <line x1="95" y1="122" x2="95" y2="1080"/>
+    <line x1="290" y1="122" x2="290" y2="1080"/>
+    <line x1="530" y1="122" x2="530" y2="1080"/>
+    <line x1="775" y1="122" x2="775" y2="1080"/>
+    <line x1="1020" y1="122" x2="1020" y2="1080"/>
+    <line x1="1270" y1="122" x2="1270" y2="1080"/>
+  </g>
+
+  <g font-family="Arial" font-size="12">
+    <text x="8" y="160" fill="#94A3B8" font-size="10">1</text>
+    <line x1="95" y1="156" x2="290" y2="156" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="110" y="150">affiche occupation café × match</text>
+    <text x="8" y="188" fill="#94A3B8" font-size="10">2</text>
+    <line x1="290" y1="184" x2="530" y2="184" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="305" y="178">GET occupancy(businessId, matchId)</text>
+    <text x="8" y="216" fill="#94A3B8" font-size="10">3</text>
+    <line x1="530" y1="212" x2="775" y2="212" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="545" y="206">SUM partySize CHECKED_IN / CONFIRMED / PENDING</text>
+    <text x="8" y="244" fill="#94A3B8" font-size="10">4</text>
+    <line x1="775" y1="240" x2="530" y2="240" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#ro)"/>
+    <text x="560" y="234" fill="#64748B">checkedIn, confirmed, pending</text>
+    <text x="8" y="272" fill="#94A3B8" font-size="10">5</text>
+    <line x1="530" y1="268" x2="775" y2="268" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="545" y="262">dernier BusinessLiveOccupancy (owner)</text>
+    <text x="8" y="300" fill="#94A3B8" font-size="10">6</text>
+    <line x1="775" y1="296" x2="530" y2="296" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#ro)"/>
+    <text x="560" y="290" fill="#64748B">ownerReported, reportedAt  (ou null)</text>
+    <text x="8" y="328" fill="#94A3B8" font-size="10">7</text>
+    <line x1="530" y1="324" x2="1020" y2="324" stroke="#D97706" stroke-width="1.6" marker-end="url(#ao)"/>
+    <text x="545" y="318">computeBreakdown(capa, CI, CONF, PEND, live)</text>
+  </g>
+
+  <rect x="900" y="340" width="370" height="200" rx="4" fill="#FFFBEB" stroke="#D97706" stroke-dasharray="5 3"/>
+  <text x="912" y="358" font-family="Arial" font-size="11" font-weight="700" fill="#D97706">OccupancyEngine (interne)</text>
+  <text x="912" y="380" font-family="Arial" font-size="12" fill="#0F172A">projCONF = round(CONF × 0,85)</text>
+  <text x="912" y="400" font-family="Arial" font-size="12" fill="#0F172A">projPEND = round(PEND × 0,60)</text>
+  <text x="912" y="420" font-family="Arial" font-size="12" fill="#0F172A">résaSeule = CI + projCONF + projPEND</text>
+  <text x="912" y="440" font-family="Arial" font-size="12" fill="#0F172A">fresh = (now − reportedAt) ≤ 15 min</text>
+  <text x="912" y="464" font-family="Arial" font-size="12" font-weight="700" fill="#9A3412">% = effectif / capacité × 100</text>
+  <text x="912" y="484" font-family="Arial" font-size="12" fill="#0F172A">VERT≤50  ORANGE≤80  ROUGE</text>
+  <text x="912" y="524" font-family="Arial" font-size="11" fill="#92400E">plafond : min(effectif, capacité)</text>
+
+  <rect x="250" y="360" width="620" height="160" rx="4" fill="#ECFDF3" fill-opacity="0.5" stroke="#0F9F58" stroke-dasharray="5 3"/>
+  <text x="262" y="378" font-family="Arial" font-size="11" font-weight="700" fill="#0F9F58">alt  [rapport owner FRAIS ≤ 15 min]     else  [absent / trop vieux]</text>
+  <text x="262" y="406" font-family="Arial" font-size="13" fill="#065F46">effectif = ownerReported     (vérité terrain, walk-in inclus)</text>
+  <text x="262" y="426" font-family="Arial" font-size="12" fill="#047857">walkIn = max(0, owner − checkedIn)</text>
+  <text x="262" y="446" font-family="Arial" font-size="12" fill="#047857">pic = min(capa, owner + projCONF)</text>
+  <line x1="260" y1="458" x2="860" y2="458" stroke="#0F9F58" stroke-dasharray="4 3"/>
+  <text x="262" y="478" font-family="Arial" font-size="13" fill="#0F172A">effectif = résaSeule   (éventuellement max avec vieux rapport)</text>
+  <text x="262" y="500" font-family="Arial" font-size="12" fill="#334155">pic = min(capa, effectif + projCONF)</text>
+
+  <g font-family="Arial" font-size="12">
+    <text x="8" y="548" fill="#94A3B8" font-size="10">8</text>
+    <line x1="1020" y1="544" x2="530" y2="544" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#ro)"/>
+    <text x="600" y="538" fill="#64748B">OccupancyBreakdown</text>
+  </g>
+
+  <rect x="250" y="568" width="1100" height="120" rx="4" fill="#EDE9FE" fill-opacity="0.45" stroke="#6D28D9" stroke-dasharray="5 3"/>
+  <text x="262" y="586" font-family="Arial" font-size="11" font-weight="700" fill="#6D28D9">opt  <<extend>>  service IA disponible     else  heuristique</text>
+  <g font-family="Arial" font-size="12">
+    <text x="8" y="614" fill="#94A3B8" font-size="10">9</text>
+    <line x1="530" y1="610" x2="1270" y2="610" stroke="#6D28D9" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="600" y="604">predict(breakdown, historique, match)</text>
+    <text x="8" y="642" fill="#94A3B8" font-size="10">10</text>
+    <line x1="1270" y1="638" x2="530" y2="638" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#ro)"/>
+    <text x="700" y="632" fill="#64748B">peak, risque LOW/MEDIUM/HIGH</text>
+    <text x="262" y="672" fill="#0F172A">Heuristique : +12 CDM  +8 week-end  +6 soirée 18–22h  + historique 30 j  + vitesse check-in</text>
+  </g>
+
+  <g font-family="Arial" font-size="12">
+    <text x="8" y="716" fill="#94A3B8" font-size="10">11</text>
+    <line x1="530" y1="712" x2="290" y2="712" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#ro)"/>
+    <text x="310" y="706" fill="#64748B">%  ·  VERT/ORANGE/ROUGE  ·  places libres  ·  prédiction</text>
+    <text x="8" y="748" fill="#94A3B8" font-size="10">12</text>
+    <line x1="95" y1="744" x2="290" y2="744" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="110" y="738">owner saisit le nombre de clients (live)</text>
+    <text x="8" y="776" fill="#94A3B8" font-size="10">13</text>
+    <line x1="290" y1="772" x2="530" y2="772" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="305" y="766">PUT live occupancy  source=OWNER_MANUAL</text>
+    <text x="8" y="804" fill="#94A3B8" font-size="10">14</text>
+    <line x1="530" y1="800" x2="775" y2="800" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#ao)"/>
+    <text x="545" y="794">INSERT LiveOccupancy  reportedAt=now</text>
+    <text x="8" y="836" fill="#94A3B8" font-size="10">15</text>
+    <text x="305" y="836">Au check-in QR : source=CHECK_IN_AUTO  (current += partySize, plafonné à capa)</text>
+  </g>
+
+  <rect x="40" y="870" width="1420" height="490" rx="8" fill="#F8FAFC" stroke="#1A2332"/>
+  <text x="60" y="898" font-family="Arial" font-size="15" font-weight="700" fill="#111827">La formule à réciter (exemple oral)</text>
+  <text x="60" y="928" font-family="Arial" font-size="14" fill="#0F172A">Café de 100 places.  20 check-in,  40 confirmés,  10 pending.  Le proprio dit 55 personnes il y a 8 minutes.</text>
+  <text x="60" y="958" font-family="Arial" font-size="14" fill="#0F172A">estimationRésa = 20 + 40×0,85 + 10×0,60 = 20 + 34 + 6 = 60</text>
+  <text x="60" y="986" font-family="Arial" font-size="14" font-weight="700" fill="#065F46">Rapport frais (8 min ≤ 15) → effectif = 55 (on croit le proprio)  ·  walk-in ≈ 55−20 = 35  ·  pic = 55+34 = 89 % ORANGE/ROUGE</text>
+  <text x="60" y="1014" font-family="Arial" font-size="14" fill="#0F172A">Sans rapport owner → effectif = 60 % ORANGE.</text>
+  <text x="60" y="1048" font-family="Arial" font-size="13" fill="#0F172A">Pourquoi 85 % et 60 % ? Hypothèses métier : on ne compte pas 100 % des confirmés (no-show) ni 100 % des PENDING (abandon de paiement).</text>
+  <text x="60" y="1074" font-family="Arial" font-size="13" fill="#0F172A">Pourquoi 15 min ? Un comptage trop vieux n'est plus la salle. Au-delà, on retombe sur l'estimation par réservations (éventuellement max avec le vieux chiffre).</text>
+  <text x="60" y="1100" font-family="Arial" font-size="13" fill="#0F172A">Deux couches : OccupancyCalculator (% et couleur)  ·  OccupancyEngine (mélange owner + résas). C'est Engine qui est le cœur match-day.</text>
+  <text x="60" y="1126" font-family="Arial" font-size="13" fill="#0F172A">Prédiction : IA RandomForest si le microservice Python répond, sinon heuristique (CDM, week-end, soirée, historique, vitesse check-in).</text>
+  <text x="60" y="1156" font-family="Arial" font-size="13" font-weight="700" fill="#065F46">Phrase : « L'occupation n'est pas booked/capacity. On fusionne le comptage physique du proprio s'il a moins de 15 min, sinon un signal de réservations pondéré. »</text>
+  <text x="60" y="1186" font-family="Arial" font-size="12" fill="#64748B">Fichiers : OccupancyEngine.java  ·  OccupancyCalculator.java  ·  BusinessOccupancyServiceImpl.java  ·  LiveOccupancyServiceImpl.java  ·  CompositeOccupancyPredictionService.java</text>
+  <text x="60" y="1214" font-family="Arial" font-size="13" fill="#0F172A">Critères séquence : alt (frais / pas frais)  ·  opt (IA)  ·  acteur secondaire IA  ·  note interne sur la classe utility  ·  constantes visibles.</text>
+  <text x="60" y="1240" font-family="Arial" font-size="13" fill="#0F172A">Couleurs fan : GREEN confortable, ORANGE se remplir, RED saturé — utilisées aussi par la recommandation de cafés (proximité + affluence).</text>
+</svg>

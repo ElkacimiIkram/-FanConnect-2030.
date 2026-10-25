@@ -1,0 +1,19 @@
+# Development override — database tools only
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres pgadmin -d
+
+services:
+  postgres:
+    ports:
+      - "${DB_PORT:-5433}:5432"
+
+  pgadmin:
+    ports:
+      - "5050:80"
+
+  backend:
+    profiles:
+      - full
+
+  frontend:
+    profiles:
+      - full

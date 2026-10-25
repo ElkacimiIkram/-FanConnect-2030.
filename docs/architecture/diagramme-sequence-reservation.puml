@@ -1,0 +1,66 @@
+@startuml Diagramme_sequence_reservation_FanConnect_2030
+' Scénario principal : réserver une table pour un match
+' Générer : https://www.plantuml.com/plantuml
+
+title Diagramme de séquence — Réservation d'une table (scénario principal)
+
+skinparam shadowing false
+skinparam sequenceArrowThickness 1.5
+skinparam roundcorner 8
+skinparam ParticipantPadding 12
+skinparam BoxPadding 8
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+}
+
+actor Fan
+participant "Frontend\n(React)" as UI
+participant "Backend\n(Spring Boot)" as API
+participant "Stripe" as Stripe
+database "PostgreSQL" as DB
+
+== Connexion ==
+Fan -> UI : se connecte
+UI -> API : POST /auth/login
+API -> DB : vérifier email + mot de passe
+DB --> API : utilisateur Fan
+API --> UI : JWT
+UI --> Fan : accès à l'espace Fan
+
+== Choix match + café ==
+Fan -> UI : choisit un match
+UI -> API : GET /matches
+API --> UI : liste des matchs
+Fan -> UI : choisit un café
+UI -> API : GET /businesses + occupation
+API --> UI : cafés + places disponibles
+
+== Réservation ==
+Fan -> UI : choisit table + confirme
+UI -> API : POST /fan/bookings
+API -> DB : créer Reservation (PENDING)
+DB --> API : réservation créée
+API --> UI : bookingId
+
+== Paiement ==
+UI -> API : POST /fan/bookings/{id}/payment-intent
+API -> Stripe : créer PaymentIntent
+Stripe --> API : clientSecret
+API --> UI : clé de paiement
+Fan -> UI : paie par carte
+UI -> Stripe : confirmer le paiement
+Stripe --> UI : paiement OK
+UI -> API : POST /fan/bookings/{id}/pay
+API -> DB : Reservation CONFIRMED\n+ Payment PAID\n+ ticket QR
+API --> UI : billet
+
+== Ticket ==
+UI --> Fan : affiche le ticket QR
+
+@enduml

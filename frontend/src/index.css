@@ -1,0 +1,1072 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-navy-900 font-sans text-ink antialiased;
+    background-image: theme('backgroundImage.arena-mesh');
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-ink tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-primary-600/40 text-white;
+  }
+}
+
+/* ══════════════════════════════════════════
+   FANCONNECT 2030 — DESIGN SYSTEM
+   Navy · WC Green · Gold · Glassmorphism
+   ══════════════════════════════════════════ */
+
+@layer components {
+  /* ── App Shell ── */
+  .fc-app {
+    @apply relative min-h-screen w-full max-w-full bg-navy-900;
+  }
+
+  .fc-app__overlay {
+    @apply fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity lg:hidden;
+  }
+
+  .fc-app__overlay--visible {
+    @apply opacity-100 pointer-events-auto;
+  }
+
+  .fc-app__main {
+    @apply flex min-h-screen min-w-0 max-w-full flex-col;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .fc-app__main {
+      margin-left: 260px;
+      width: calc(100% - 260px);
+      max-width: calc(100% - 260px);
+    }
+  }
+
+  .fc-app__main--home .fc-app__content {
+    @apply p-0;
+  }
+
+  .fc-app__content {
+    @apply flex-1 p-4 sm:p-6 lg:p-8;
+  }
+
+  .fc-app__mobile-sidebar {
+    @apply fixed inset-y-0 left-0 z-50 w-[260px] shadow-sidebar lg:hidden;
+  }
+
+  .fc-app .fc-sidebar {
+    @apply hidden lg:flex;
+  }
+
+  .fc-page-content {
+    @apply min-h-0 opacity-100;
+  }
+
+  /* ── Sidebar ── */
+  .fc-sidebar {
+    @apply fixed inset-y-0 left-0 z-30 w-[260px] flex-col border-r border-surface-border bg-navy-800/95 backdrop-blur-glass;
+    background-image: linear-gradient(180deg, rgba(15,159,88,0.06) 0%, transparent 40%);
+  }
+
+  .fc-sidebar__brand {
+    @apply flex items-center gap-3 border-b border-surface-border px-5 py-6;
+  }
+
+  .fc-sidebar__logo {
+    @apply flex h-11 w-11 items-center justify-center rounded-2xl bg-gold-shine shadow-glow-gold;
+  }
+
+  .fc-sidebar__logo--sm {
+    @apply h-10 w-10;
+  }
+
+  .fc-sidebar__logo-inner {
+    @apply font-display text-sm font-extrabold text-navy-950;
+  }
+
+  .fc-sidebar__title {
+    @apply font-display text-lg font-bold text-ink;
+  }
+
+  .fc-sidebar__subtitle {
+    @apply text-[10px] font-bold uppercase tracking-widest text-accent-400;
+  }
+
+  .fc-sidebar__section {
+    @apply px-5 pt-5 text-[10px] font-bold uppercase tracking-widest text-ink-faint;
+  }
+
+  .fc-sidebar__nav {
+    @apply flex-1 space-y-1 overflow-y-auto px-3 py-4;
+  }
+
+  .fc-sidebar__link {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink-muted transition-all duration-200 hover:bg-surface-muted hover:text-ink;
+  }
+
+  .fc-sidebar__link--active {
+    @apply bg-primary-600/20 text-primary-300 shadow-glow;
+    box-shadow: inset 3px 0 0 theme('colors.primary.500');
+  }
+
+  .fc-sidebar__icon {
+    @apply flex h-8 w-8 items-center justify-center rounded-lg bg-surface-muted text-base;
+  }
+
+  .fc-sidebar__link--active .fc-sidebar__icon {
+    @apply bg-primary-600/30;
+  }
+
+  .fc-sidebar__footer {
+    @apply border-t border-surface-border p-4;
+  }
+
+  .fc-sidebar__wc-badge {
+    @apply flex items-center gap-2 rounded-xl border border-accent-500/30 bg-accent-500/10 px-3 py-2 text-xs font-bold text-accent-400;
+  }
+
+  /* ── Top Bar ── */
+  .fc-topbar {
+    @apply sticky top-0 z-20 flex w-full min-w-0 max-w-full shrink-0 items-center justify-between gap-4 border-b border-surface-border bg-navy-900/80 px-4 py-3 backdrop-blur-glass sm:px-6;
+  }
+
+  .fc-topbar__left {
+    @apply flex items-center gap-3;
+  }
+
+  .fc-topbar__menu-btn {
+    @apply flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl border border-surface-border bg-surface-muted lg:hidden;
+  }
+
+  .fc-topbar__menu-btn span {
+    @apply block h-0.5 w-5 rounded-full bg-ink;
+  }
+
+  .fc-topbar__title {
+    @apply font-display text-lg font-bold text-ink sm:text-xl;
+  }
+
+  .fc-topbar__right {
+    @apply flex items-center gap-3;
+  }
+
+  .fc-topbar__user {
+    @apply items-center gap-2 rounded-xl border border-surface-border bg-surface-muted px-3 py-1.5;
+  }
+
+  .fc-topbar__avatar {
+    @apply flex h-7 w-7 items-center justify-center rounded-lg bg-primary-600 text-xs font-bold text-white;
+  }
+
+  .fc-topbar__name {
+    @apply text-sm font-semibold text-ink-muted;
+  }
+
+  .fc-topbar__link {
+    @apply text-sm font-semibold text-ink-muted transition hover:text-ink;
+  }
+
+  /* ── Glass Card ── */
+  .fc-glass-card {
+    @apply relative overflow-hidden rounded-2xl border border-white/10 bg-glass-gradient shadow-glass backdrop-blur-glass;
+    background-color: rgba(26, 35, 50, 0.85);
+  }
+
+  .fc-glass-card--hover {
+    @apply transition-all duration-300;
+  }
+
+  .fc-glass-card--hover:hover {
+    @apply border-primary-500/30 shadow-glow;
+  }
+
+  .fc-glass-card--glow {
+    @apply shadow-glow;
+  }
+
+  /* ── Buttons ── */
+  .fc-btn {
+    @apply inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-bold transition-all duration-300;
+  }
+
+  .fc-btn--primary {
+    @apply bg-primary-600 text-white shadow-glow hover:-translate-y-0.5 hover:bg-primary-500 hover:shadow-glow-lg;
+  }
+
+  .fc-btn--glass {
+    @apply border border-white/20 bg-white/10 text-white backdrop-blur-md hover:border-white/35 hover:bg-white/15;
+  }
+
+  .fc-btn--gold {
+    @apply bg-gold-shine text-navy-950 shadow-glow-gold hover:-translate-y-0.5;
+  }
+
+  /* ── Hero ── */
+  /* ── FanBot ── */
+  .fc-fanbot {
+    @apply pointer-events-none fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3;
+  }
+
+  .fc-fanbot__launcher,
+  .fc-fanbot__panel,
+  .fc-fanbot__close,
+  .fc-fanbot__chip,
+  .fc-fanbot__send,
+  .fc-fanbot__input {
+    @apply pointer-events-auto;
+  }
+
+  .fc-fanbot__launcher {
+    @apply flex h-14 w-14 items-center justify-center rounded-full bg-gold-shine font-display text-lg font-extrabold text-navy-950 shadow-glow-gold transition hover:brightness-110;
+  }
+
+  .fc-fanbot__panel {
+    @apply flex h-[min(36rem,72vh)] w-[min(24rem,calc(100%-1.5rem))] flex-col overflow-hidden rounded-2xl border border-white/10 bg-navy-800/95 shadow-glass backdrop-blur-glass;
+  }
+
+  .fc-fanbot__header {
+    @apply flex items-center justify-between border-b border-surface-border px-4 py-3;
+    background-image: linear-gradient(90deg, rgba(15, 159, 88, 0.16), transparent);
+  }
+
+  .fc-fanbot__close {
+    @apply flex h-8 w-8 items-center justify-center rounded-lg text-xl text-ink-muted hover:bg-surface-muted hover:text-ink;
+  }
+
+  .fc-fanbot__messages {
+    @apply flex-1 space-y-3 overflow-y-auto px-3 py-3;
+  }
+
+  .fc-fanbot__bubble {
+    @apply max-w-[95%] rounded-2xl px-3 py-2.5;
+  }
+
+  .fc-fanbot__bubble--bot {
+    @apply border border-white/10 bg-surface-muted text-ink;
+  }
+
+  .fc-fanbot__bubble--user {
+    @apply ml-auto bg-primary-600 text-white;
+  }
+
+  .fc-fanbot__chips {
+    @apply flex flex-wrap gap-1.5 border-t border-surface-border px-3 py-2;
+  }
+
+  .fc-fanbot__chips-label {
+    @apply w-full text-[10px] font-bold uppercase tracking-wider text-ink-faint;
+  }
+
+  .fc-fanbot__chip {
+    @apply rounded-full border border-surface-border bg-navy-900/70 px-2.5 py-1 text-[11px] font-semibold text-ink-muted hover:border-primary-500/40 hover:text-ink;
+  }
+
+  .fc-fanbot__form {
+    @apply flex gap-2 border-t border-surface-border p-3;
+  }
+
+  .fc-fanbot__input {
+    @apply min-w-0 flex-1 rounded-xl border border-surface-border bg-navy-900/80 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-primary-500/50;
+  }
+
+  .fc-fanbot__send {
+    @apply rounded-xl bg-primary-600 px-3 py-2 text-xs font-bold text-white disabled:opacity-40;
+  }
+
+  .fc-hero {
+    @apply relative w-full min-w-0 max-w-full overflow-hidden;
+    contain: paint;
+  }
+
+  .fc-hero__bg {
+    @apply absolute inset-0 overflow-hidden bg-hero-stadium;
+  }
+
+  .fc-hero__rays {
+    @apply pointer-events-none absolute opacity-40;
+    inset: -10%;
+    background: repeating-conic-gradient(
+      from 0deg at 72% 42%,
+      transparent 0deg,
+      transparent 16deg,
+      rgba(15, 159, 88, 0.07) 20deg,
+      transparent 24deg
+    );
+    animation: fcRays 36s linear infinite;
+  }
+
+  .fc-hero__pitch {
+    @apply pointer-events-none absolute bottom-[8%] left-[6%] right-[6%] h-[34%] rounded-sm opacity-50;
+    border: 1px solid rgba(15, 159, 88, 0.14);
+    background:
+      linear-gradient(rgba(15, 159, 88, 0.08), transparent 1px) 0 0 / 100% 22%,
+      radial-gradient(circle at 50% 55%, transparent 16%, rgba(15, 159, 88, 0.14) 17%, transparent 18%);
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  }
+
+  .fc-hero__stadium-lights {
+    @apply absolute inset-0 opacity-70;
+    background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,0.12), transparent 60%),
+      radial-gradient(ellipse 30% 20% at 20% 10%, rgba(15,159,88,0.28), transparent),
+      radial-gradient(ellipse 34% 24% at 78% 38%, rgba(15,159,88,0.16), transparent),
+      radial-gradient(ellipse 30% 20% at 80% 10%, rgba(212,175,55,0.2), transparent);
+    animation: fcGlow 7s ease-in-out infinite;
+  }
+
+  .fc-hero__crowd-glow {
+    @apply absolute bottom-0 left-0 right-0 h-1/3;
+    background: linear-gradient(to top, rgba(15,159,88,0.15), transparent);
+  }
+
+  .fc-hero__mesh {
+    @apply absolute inset-0 bg-mesh-hero opacity-50;
+  }
+
+  .fc-hero__particle {
+    @apply absolute rounded-full bg-primary-400/40 pointer-events-none;
+  }
+
+  .fc-hero__grid {
+    @apply relative mx-auto grid w-full min-w-0 max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:px-10 lg:py-24;
+  }
+
+  .fc-hero__copy {
+    @apply min-w-0 max-w-full text-center lg:text-left;
+  }
+
+  .fc-hero__badge {
+    @apply inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-accent-400;
+  }
+
+  .fc-hero__badge-dot {
+    @apply h-2 w-2 animate-pulse rounded-full bg-primary-400;
+  }
+
+  .fc-hero__headline {
+    @apply mt-6 font-display text-4xl font-extrabold leading-[1.05] text-white sm:text-5xl lg:text-6xl;
+  }
+
+  .fc-hero__headline-accent {
+    @apply block bg-gradient-to-r from-primary-300 via-accent-400 to-white bg-clip-text text-transparent;
+  }
+
+  .fc-hero__sub {
+    @apply mt-4 text-lg text-ink-muted sm:text-xl;
+  }
+
+  .fc-hero__sub--gold {
+    @apply text-accent-400 font-semibold;
+  }
+
+  .fc-hero__cta {
+    @apply mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start;
+  }
+
+  .fc-hero__cta .fc-btn {
+    transform-origin: center center;
+  }
+
+  .fc-hero__cta .fc-btn--primary:hover {
+    transform: translateY(-2px) scale(1.03);
+  }
+
+  .fc-hero__cta .fc-btn--glass:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 0 28px rgba(15, 159, 88, 0.28);
+  }
+
+  .fc-hero__stats {
+    @apply mt-12 flex flex-wrap justify-center gap-8 lg:justify-start;
+  }
+
+  .fc-hero__stat {
+    @apply min-w-0;
+  }
+
+  .fc-hero__stat-value {
+    @apply block font-display text-2xl font-bold text-white;
+  }
+
+  .fc-hero__stat-label {
+    @apply text-xs text-ink-faint;
+  }
+
+  .fc-hero__visual {
+    --fc-orbit: 104px;
+    @apply relative mx-auto block h-[320px] w-full min-w-0 max-w-[420px] overflow-hidden;
+    contain: paint;
+  }
+
+  @media (min-width: 1024px) {
+    .fc-hero__visual {
+      --fc-orbit: 128px;
+      height: 440px;
+      max-width: none;
+    }
+  }
+
+  .fc-hero__orbit-ring {
+    @apply pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10;
+    width: calc(var(--fc-orbit) * 2);
+    height: calc(var(--fc-orbit) * 2);
+  }
+
+  .fc-hero__scene {
+    @apply relative flex h-full w-full items-center justify-center overflow-hidden;
+  }
+
+  .fc-hero__trophy {
+    @apply absolute right-[10%] top-[8%] z-20;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.45));
+  }
+
+  .fc-hero__ball {
+    @apply relative z-10;
+  }
+
+  .fc-hero__ball-glow {
+    @apply pointer-events-none absolute left-1/2 top-1/2 -z-10 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500/25 blur-3xl;
+  }
+
+  .fc-hero__flags-orbit {
+    @apply pointer-events-none absolute left-1/2 top-1/2 h-0 w-0;
+    transform-origin: center center;
+    animation: fcOrbit 48s linear infinite;
+  }
+
+  .fc-hero__flag {
+    @apply absolute left-0 top-0 h-10 w-14;
+    margin-left: -1.75rem;
+    margin-top: -1.25rem;
+  }
+
+  .fc-hero__flag-img {
+    @apply h-10 w-14 rounded-md border border-white/20 object-cover shadow-card;
+    animation: fcOrbit 48s linear infinite reverse;
+  }
+
+  .fc-hero-trophy-float {
+    animation: trophyFloat 5s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.45));
+  }
+
+  .fc-hero-ball-float {
+    animation: heroBallFloat 4s ease-in-out infinite, footballSpin 8s linear infinite;
+  }
+
+  .fc-hero-flags-orbit {
+    animation: spin 50s linear infinite;
+  }
+
+  .fc-hero-particle {
+    animation: heroParticle 3s ease-in-out infinite;
+  }
+
+  /* ── Auth ── */
+  .fc-auth {
+    @apply relative flex min-h-screen items-center justify-center p-4;
+  }
+
+  .fc-auth__bg {
+    @apply absolute inset-0 bg-hero-stadium;
+  }
+
+  .fc-auth__glow {
+    @apply absolute rounded-full blur-3xl;
+  }
+
+  .fc-auth__glow--green {
+    @apply left-1/4 top-1/4 h-64 w-64 bg-primary-500/20;
+  }
+
+  .fc-auth__glow--gold {
+    @apply bottom-1/4 right-1/4 h-48 w-48 bg-accent-500/15;
+  }
+
+  .fc-auth__panel {
+    @apply relative z-10 w-full max-w-md fc-glass-card p-8;
+  }
+
+  .fc-auth__brand {
+    @apply mb-8 flex items-center gap-3;
+  }
+
+  /* ── Progress Ring ── */
+  .fc-progress-ring {
+    @apply relative inline-flex items-center justify-center;
+  }
+
+  .fc-progress-ring__label {
+    @apply absolute inset-0 flex flex-col items-center justify-center text-center;
+  }
+
+  .fc-progress-ring__pct {
+    @apply text-xs font-bold tabular-nums text-ink;
+  }
+
+  .fc-progress-ring__level {
+    @apply text-[8px] font-bold uppercase;
+  }
+
+  /* ── Skeleton ── */
+  .fc-skeleton {
+    @apply animate-pulse rounded-lg bg-surface-muted;
+  }
+
+  /* ── Legacy compat (dark-adapted) ── */
+  .page-container {
+    @apply mx-auto max-w-7xl;
+  }
+
+  .page-enter {
+    @apply animate-fade-up;
+  }
+
+  .arena-card {
+    @apply fc-glass-card;
+  }
+
+  .magic-card {
+    @apply fc-glass-card fc-glass-card--hover;
+  }
+
+  .btn-arena {
+    @apply fc-btn fc-btn--primary py-2.5;
+  }
+
+  .btn-arena-outline {
+    @apply inline-flex items-center justify-center rounded-xl border border-surface-border bg-surface-muted px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-primary-500/40 hover:bg-primary-600/10;
+  }
+
+  .btn-glow {
+    @apply fc-btn fc-btn--primary;
+  }
+
+  .btn-glass {
+    @apply fc-btn fc-btn--glass;
+  }
+
+  .badge-arena {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-primary-500/30 bg-primary-600/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-300;
+  }
+
+  .badge-gold {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-accent-500/30 bg-accent-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent-400;
+  }
+
+  .section-title {
+    @apply font-display text-display-md text-ink sm:text-display-lg;
+  }
+
+  .section-subtitle {
+    @apply mt-2 max-w-xl text-base leading-relaxed text-ink-muted;
+  }
+
+  .nav-pill {
+    @apply inline-flex items-center rounded-full border border-surface-border bg-surface-muted px-4 py-2 text-sm font-bold text-ink-muted transition hover:border-primary-500/40 hover:text-ink;
+  }
+
+  .nav-pill-active {
+    @apply border-primary-500/40 bg-primary-600 text-white shadow-soft hover:text-white;
+  }
+
+  .match-panel {
+    @apply fc-glass-card p-5 sm:p-6;
+  }
+
+  .match-panel-title {
+    @apply text-xs font-bold uppercase tracking-wider text-ink-faint;
+  }
+
+  .cta-banner {
+    @apply fc-glass-card border-primary-500/25 p-5 sm:p-6;
+    background: linear-gradient(135deg, rgba(15,159,88,0.12), rgba(17,24,39,0.8), rgba(212,175,55,0.08));
+  }
+
+  .wc-detail-hero {
+    @apply overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-8;
+    background: linear-gradient(145deg, #0f172a 0%, #111827 45%, rgba(15, 159, 88, 0.18) 100%);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .wc-importance-badge {
+    @apply rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wide;
+  }
+
+  .wc-stat-bar {
+    @apply h-2 flex-1 overflow-hidden rounded-full bg-white/10;
+  }
+
+  .wc-stat-bar-fill {
+    @apply h-full rounded-full transition-all duration-500;
+  }
+
+  .fc-sticky-reserve {
+    @apply fixed bottom-0 left-0 right-0 z-40 translate-y-full border-t border-surface-border bg-navy-900/95 px-4 py-3 backdrop-blur-glass transition-transform duration-300;
+  }
+
+  .fc-sticky-reserve--visible {
+    @apply translate-y-0;
+  }
+
+  .fc-sticky-reserve__inner {
+    @apply mx-auto flex max-w-5xl items-center justify-between gap-4;
+  }
+
+  .fc-sticky-reserve__teams {
+    @apply truncate text-sm font-bold text-ink;
+  }
+
+  .fc-sticky-reserve__meta {
+    @apply text-xs text-ink-muted;
+  }
+
+  .fc-live-ticker {
+    @apply relative z-30 flex w-full min-w-0 max-w-full items-stretch overflow-hidden border-b border-red-500/20 bg-navy-950/90;
+    contain: paint;
+  }
+
+  .fc-live-ticker__label {
+    @apply flex shrink-0 items-center gap-2 bg-red-600/90 px-4 py-2.5 text-xs font-black uppercase tracking-widest text-white;
+  }
+
+  .fc-live-ticker__dot {
+    @apply h-2 w-2 animate-pulse rounded-full bg-white;
+  }
+
+  .fc-live-ticker__track {
+    @apply relative min-w-0 flex-1 overflow-hidden py-2;
+  }
+
+  .fc-live-ticker__content {
+    @apply flex w-max items-center gap-8 whitespace-nowrap px-4;
+    animation: tickerScroll calc(var(--ticker-count, 4) * 6s) linear infinite;
+  }
+
+  .fc-live-ticker__item {
+    @apply inline-flex items-center text-sm text-white/90 transition hover:text-white;
+  }
+
+  .fc-bar-chart__label {
+    @apply mb-1 flex items-center justify-between gap-3;
+  }
+
+  .fc-bar-chart__track {
+    @apply w-full overflow-hidden rounded-full bg-surface-muted;
+  }
+
+  .fc-bar-chart__fill {
+    @apply h-full rounded-full transition-all duration-700 ease-out;
+  }
+
+  .fc-heatmap-grid {
+    @apply grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  .fc-heatmap-cell {
+    @apply relative rounded-2xl border p-4 transition hover:-translate-y-0.5;
+  }
+
+  .fc-heatmap-cell--hot {
+    @apply border-red-500/40 bg-red-500/10;
+  }
+
+  .fc-heatmap-cell--warm {
+    @apply border-accent-500/40 bg-accent-500/10;
+  }
+
+  .fc-heatmap-cell--cool {
+    @apply border-primary-500/30 bg-primary-500/5;
+  }
+
+  .fc-heatmap-cell__badge {
+    @apply absolute right-3 top-3 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-faint;
+  }
+
+  .input-arena, .select-arena {
+    @apply w-full rounded-xl border border-surface-border bg-navy-800/80 px-4 py-3 text-sm text-ink outline-none transition focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20;
+  }
+
+  .wizard-step-active {
+    @apply bg-primary-600 text-white shadow-glow;
+  }
+
+  .wizard-step-done {
+    @apply bg-primary-600/20 text-primary-300;
+  }
+
+  .wizard-step-pending {
+    @apply bg-surface-muted text-ink-faint;
+  }
+
+  .choice-card {
+    @apply w-full rounded-xl border border-surface-border bg-surface-muted p-4 text-left transition hover:border-primary-500/40 hover:bg-primary-600/10 hover:shadow-glow;
+  }
+
+  .tab-arena-active {
+    @apply bg-primary-600/25 text-primary-300;
+  }
+
+  .wc-dashboard {
+    @apply -m-4 sm:-m-6 lg:-m-8;
+  }
+
+  .wc-hero {
+    @apply rounded-none;
+  }
+
+  /* ── Booking progress ── */
+  .fc-booking-progress {
+    @apply mb-8;
+  }
+
+  .fc-booking-progress__track {
+    @apply relative mb-4 h-1 overflow-hidden rounded-full bg-surface-muted;
+  }
+
+  .fc-booking-progress__fill {
+    @apply absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary-600 to-accent-500 shadow-glow;
+  }
+
+  .fc-booking-progress__steps {
+    @apply flex justify-between gap-1;
+  }
+
+  .fc-booking-progress__step {
+    @apply flex flex-col items-center gap-1 text-ink-faint;
+  }
+
+  .fc-booking-progress__step--active {
+    @apply text-primary-400;
+  }
+
+  .fc-booking-progress__step--done {
+    @apply text-primary-500;
+  }
+
+  .fc-booking-progress__dot {
+    @apply flex h-8 w-8 items-center justify-center rounded-full border border-surface-border bg-navy-800 text-xs font-bold;
+  }
+
+  .fc-booking-progress__step--active .fc-booking-progress__dot {
+    @apply border-primary-500 bg-primary-600/30 text-white shadow-glow;
+  }
+
+  .fc-booking-progress__step--done .fc-booking-progress__dot {
+    @apply border-primary-500/50 bg-primary-600/20 text-primary-300;
+  }
+
+  .fc-booking-progress__label {
+    @apply text-[10px] font-semibold uppercase tracking-wide;
+  }
+
+  /* ── AI Recommendation Card ── */
+  .fc-recommendation-card {
+    @apply fc-glass-card overflow-hidden;
+  }
+
+  .fc-recommendation-card__header {
+    @apply flex items-center justify-between border-b border-surface-border px-4 py-3;
+  }
+
+  .fc-recommendation-card__rank {
+    @apply rounded-full border border-accent-500/30 bg-accent-500/10 px-2.5 py-1 text-xs font-bold text-accent-400;
+  }
+
+  .fc-recommendation-card__score {
+    @apply text-right;
+  }
+
+  .fc-recommendation-card__score-value {
+    @apply block font-display text-2xl font-black leading-none text-primary-400;
+  }
+
+  .fc-recommendation-card__score-label {
+    @apply text-[10px] font-bold uppercase tracking-wider text-ink-faint;
+  }
+
+  .fc-recommendation-card__media {
+    @apply relative h-32;
+  }
+
+  .fc-recommendation-card__metrics {
+    @apply grid grid-cols-4 gap-2 border-b border-surface-border px-3 py-3 text-center;
+  }
+
+  .fc-recommendation-card__metric-label {
+    @apply block text-[10px] font-bold uppercase tracking-wide text-ink-faint;
+  }
+
+  .fc-recommendation-card__metric-value {
+    @apply mt-1 block text-sm font-bold text-ink;
+  }
+
+  .fc-recommendation-card__reason {
+    @apply px-4 py-3 text-xs leading-relaxed text-ink-muted;
+  }
+
+  .fc-recommendation-card__actions {
+    @apply flex gap-2 border-t border-surface-border p-3;
+  }
+
+  .fc-recommendation-card--compact .fc-recommendation-card__metrics {
+    @apply grid-cols-2;
+  }
+
+  /* ── AI Occupancy Intelligence Center ── */
+  .fc-intelligence-panel {
+    @apply fc-glass-card space-y-4 p-5 sm:p-6;
+  }
+
+  .fc-intelligence-panel__header {
+    @apply flex flex-wrap items-start justify-between gap-3;
+  }
+
+  .fc-intelligence-panel__source {
+    @apply text-right;
+  }
+
+  .fc-intelligence-panel__grid {
+    @apply grid gap-4 sm:grid-cols-[auto_1fr];
+  }
+
+  .fc-intelligence-panel__metrics {
+    @apply grid grid-cols-2 gap-3 sm:grid-cols-3;
+  }
+
+  .fc-intelligence-metric {
+    @apply rounded-xl border border-surface-border bg-surface-muted px-3 py-2;
+  }
+
+  .fc-intelligence-metric--highlight {
+    @apply border-primary-500/30 bg-primary-600/10;
+  }
+
+  .fc-intelligence-metric--accent {
+    @apply border-accent-500/30 bg-accent-500/10;
+  }
+
+  .fc-intelligence-metric__label {
+    @apply block text-[10px] font-bold uppercase tracking-wider text-ink-faint;
+  }
+
+  .fc-intelligence-metric__value {
+    @apply mt-1 block font-display text-lg font-bold text-ink;
+  }
+
+  .fc-intelligence-panel__model {
+    @apply rounded-xl border border-surface-border bg-surface-muted/50 px-4 py-3;
+  }
+
+  .fc-occupancy-timeline__chart {
+    @apply flex items-end justify-between gap-2 rounded-xl border border-surface-border bg-surface-muted/40 px-3 py-4;
+    min-height: 140px;
+  }
+
+  .fc-occupancy-timeline__bar-wrap {
+    @apply flex flex-1 flex-col items-center justify-end gap-1;
+    min-height: 120px;
+  }
+
+  .fc-occupancy-timeline__bar {
+    @apply w-full max-w-[2.5rem] rounded-t-lg bg-primary-600/70 transition-all;
+    min-height: 8px;
+  }
+
+  .fc-occupancy-timeline__bar--peak {
+    @apply bg-accent-500 shadow-glow-gold;
+  }
+
+  .fc-occupancy-timeline__time {
+    @apply text-[10px] font-bold text-ink-faint;
+  }
+
+  .fc-occupancy-timeline__pct {
+    @apply text-[10px] font-semibold text-ink-muted;
+  }
+}
+
+/* ── Football scene (legacy) ── */
+.football-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  overflow: hidden;
+}
+
+.football-orbit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: footballOrbit 5s ease-in-out infinite;
+}
+
+.football-bounce { animation: footballBounce 5s ease-in-out infinite; }
+
+.football-ball {
+  width: 80px;
+  height: 80px;
+  animation: footballSpin 2.8s linear infinite;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes footballOrbit {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(20px, -16px); }
+  50% { transform: translate(-10px, -28px); }
+  75% { transform: translate(-24px, -8px); }
+}
+
+@keyframes footballSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes footballBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-24px) scale(1.04); }
+  60% { transform: translateY(-10px) scale(0.98); }
+}
+
+/* ── Map markers ── */
+.venue-marker-icon { background: transparent; border: none; }
+
+.venue-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%);
+  transition: transform 0.25s ease;
+}
+
+.venue-marker:hover { transform: translate(-50%, -100%) scale(1.08); }
+
+.venue-marker-pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.venue-marker--active .venue-marker-pin {
+  width: 32px;
+  height: 32px;
+  animation: markerPulse 1.5s ease-in-out infinite;
+}
+
+.venue-marker-label {
+  margin-top: 5px;
+  max-width: 110px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: #111827;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #f8fafc;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@keyframes markerPulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(245, 158, 11, 0.45); }
+  50% { box-shadow: 0 6px 24px rgba(245, 158, 11, 0.65); }
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  background: #111827;
+  color: #f8fafc;
+}
+
+.leaflet-popup-content { margin: 0; width: 240px !important; }
+.venue-popup-image { width: 100%; height: 120px; object-fit: cover; }
+.venue-popup-body { padding: 12px 14px; }
+
+.stagger-1 { animation-delay: 0.08s; }
+.stagger-2 { animation-delay: 0.16s; }
+.stagger-3 { animation-delay: 0.24s; }
+.stagger-4 { animation-delay: 0.32s; }
+
+.animate-on-load {
+  opacity: 1;
+  animation: fadeUp 0.55s ease-out forwards;
+}
+
+.animate-fade-up {
+  opacity: 1;
+  animation: fadeUp 0.55s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes trophyFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@keyframes heroBallFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-24px); }
+}
+
+@keyframes heroParticle {
+  0%, 100% { opacity: 0.2; transform: translateY(0); }
+  50% { opacity: 0.8; transform: translateY(-20px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fcOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fcRays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fcGlow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes footballSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

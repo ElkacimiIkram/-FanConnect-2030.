@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>FanConnect 2030 — Diagrammes UML (dessins)</title>
+  <style>
+    :root { --navy:#111827; --green:#0F9F58; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background:#0B1220; color:#E2E8F0; }
+    .warn {
+      background:#065F46; color:#ECFDF3; padding:18px 28px; font-size:18px; font-weight:700;
+    }
+    .warn small { display:block; font-weight:400; margin-top:6px; font-size:14px; color:#A7F3D0; }
+    header { padding:22px 32px 8px; }
+    header h1 { margin:0 0 6px; font-size:26px; color:#fff; }
+    header p { margin:0; color:#94A3B8; }
+    nav { padding:12px 32px; display:flex; flex-wrap:wrap; gap:8px; background:#0F172A; position:sticky; top:0; z-index:2; }
+    nav a { color:#A7F3D0; text-decoration:none; font-size:13px; padding:8px 12px; border:1px solid #134E4A; border-radius:6px; background:#042F2E; }
+    nav a:hover { background:#134E4A; }
+    button.dl {
+      margin-left:auto; background:#0F9F58; color:#fff; border:0; padding:8px 14px;
+      border-radius:6px; font-weight:700; cursor:pointer; font-size:13px;
+    }
+    section { padding:24px 32px 12px; }
+    section h2 { color:#fff; font-size:20px; margin:0 0 8px; }
+    .hint { color:#94A3B8; font-size:14px; margin:0 0 14px; line-height:1.45; max-width:1100px; }
+    .frame {
+      background:#fff; border-radius:10px; overflow:auto; border:2px solid #0F9F58;
+    }
+    .frame object, .frame img { width:100%; min-height:480px; display:block; background:#fff; }
+    footer { padding:20px 32px 48px; color:#64748B; font-size:13px; }
+    @media print {
+      .warn, nav, footer, button, .hint { display:none !important; }
+      body { background:#fff; color:#000; }
+      section { page-break-after: always; padding:0; }
+      .frame { border:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="warn">
+    Tu vois les DESSINS ici, pas le code.
+    <small>Si cette page s’affiche comme du texte HTML, tu l’as ouverte dans l’éditeur. Ferme-la et double-clique <b>OUVRIR_LES_DIAGRAMMES.bat</b> à la racine du projet.</small>
+  </div>
+  <header>
+    <h1>FanConnect 2030 — Diagrammes UML 2.5</h1>
+    <p>Cas d’utilisation · Classes · Séquences — clique un titre pour y aller · Ctrl+P pour PDF</p>
+  </header>
+  <nav>
+    <a href="#uc-fan">1. UC Fan</a>
+    <a href="#uc-owner">2. UC Owner / Admin</a>
+    <a href="#classes">3. Classes</a>
+    <a href="#seq-auth">4. Auth</a>
+    <a href="#seq-resa">5. Réservation</a>
+    <a href="#seq-occ">6. Occupation</a>
+    <a href="#seq-kyc">7. KYC</a>
+    <a href="#seq-qr">8. QR</a>
+    <a href="#seq-match">9. Matchs</a>
+    <button class="dl" type="button" onclick="window.print()">Imprimer / PDF</button>
+  </nav>
+
+  <section id="uc-fan">
+    <h2>1. Cas d'utilisation — Espace Fan</h2>
+    <p class="hint"><b>include</b> (vert) = toujours. <b>extend</b> (orange) = sous condition. Réserver inclut Auth, Match, Café, Dispo, Paiement.</p>
+    <div class="frame"><object data="png/01-cas-utilisation-fan.svg" type="image/svg+xml">Diagramme Fan</object></div>
+  </section>
+
+  <section id="uc-owner">
+    <h2>2. Cas d'utilisation — Propriétaire &amp; Administrateur</h2>
+    <p class="hint">Soumettre inclut les documents KYC. Approuver / Rejeter étendent « Traiter une demande ». Check-in étend « Vérifier le ticket ».</p>
+    <div class="frame"><object data="png/01b-cas-utilisation-owner-admin.svg" type="image/svg+xml">Diagramme Owner Admin</object></div>
+  </section>
+
+  <section id="classes">
+    <h2>3. Classes principales</h2>
+    <p class="hint">Sans Controller / DTO / Repository. Composition Business ◇ Space ◇ Table. OccupancyEngine = formule 15 min / 0,85 / 0,60.</p>
+    <div class="frame"><object data="png/02-classes-principales.svg" type="image/svg+xml">Diagramme de classes</object></div>
+  </section>
+
+  <section id="seq-auth">
+    <h2>4. Séquence — Authentification JWT</h2>
+    <p class="hint">BCrypt, JWT, un admin ne s’inscrit pas en public.</p>
+    <div class="frame"><object data="png/03-sequence-authentification.svg" type="image/svg+xml">Séquence auth</object></div>
+  </section>
+
+  <section id="seq-resa">
+    <h2>5. Séquence — Réservation + Stripe + ticket QR</h2>
+    <p class="hint">PENDING → paiement → CONFIRMED + ticket FC-XXXXXXXX. Stripe vérifié côté serveur. Commission 25 %.</p>
+    <div class="frame"><object data="png/04-sequence-reservation-paiement.svg" type="image/svg+xml">Séquence réservation</object></div>
+  </section>
+
+  <section id="seq-occ">
+    <h2>6. Séquence — Occupation</h2>
+    <p class="hint">Rapport owner ≤ 15 min = vérité terrain. Sinon checkedIn + 0,85×CONFIRMED + 0,60×PENDING.</p>
+    <div class="frame"><object data="png/05-sequence-occupation.svg" type="image/svg+xml">Séquence occupation</object></div>
+  </section>
+
+  <section id="seq-kyc">
+    <h2>7. Séquence — Acceptation propriétaire</h2>
+    <p class="hint">CIN + RC + photo → admin Approuver (APPROVED + GPS) ou Rejeter. Seul APPROVED est visible aux fans.</p>
+    <div class="frame"><object data="png/06-sequence-validation-owner.svg" type="image/svg+xml">Séquence KYC</object></div>
+  </section>
+
+  <section id="seq-qr">
+    <h2>8. Séquence — Ticket QR et check-in</h2>
+    <p class="hint">QR = FANCONNECT|TICKET|FC-XXXXXXXX. Un owner ne scanne que SES cafés. Un seul check-in.</p>
+    <div class="frame"><object data="png/07-sequence-checkin-qr.svg" type="image/svg+xml">Séquence QR</object></div>
+  </section>
+
+  <section id="seq-match">
+    <h2>9. Séquence — API des matchs</h2>
+    <p class="hint">football-data.org → upsert PostgreSQL. Le fan lit notre base, pas l’API à chaque clic.</p>
+    <div class="frame"><object data="png/08-sequence-sync-matchs.svg" type="image/svg+xml">Séquence matchs</object></div>
+  </section>
+
+  <footer>
+    Fichiers dessins : docs/architecture/uml/png/*.svg<br/>
+    Pour PowerPoint : Ctrl+P → « Enregistrer au format PDF », ou capture d’écran du dessin.
+  </footer>
+</body>
+</html>

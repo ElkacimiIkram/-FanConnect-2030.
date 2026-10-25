@@ -1,0 +1,14 @@
+package com.fanconnect.model.enums;
+
+public enum NotificationType {
+    BUSINESS_PENDING,
+    BUSINESS_APPROVED,
+    BUSINESS_REJECTED,
+    BUSINESS_DISABLED,
+    RESERVATION_CONFIRMED,
+    NEW_RESERVATION,
+    PAYMENT_COMPLETED,
+    OWNER_NEW_BOOKING,
+    ADMIN_COMMISSION,
+    TICKET_CHECKED_IN
+}

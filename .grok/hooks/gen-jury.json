@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\kassimi\\.grok\\bin\\gen-pptx.cmd",
+            "timeout": 180
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\kassimi\\.grok\\bin\\gen-pptx.cmd",
+            "timeout": 180
+          }
+        ]
+      }
+    ]
+  }
+}

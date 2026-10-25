@@ -1,0 +1,548 @@
+================================================================================
+FANCONNECT 2030 — FICHIER COMPLET DE SOUTENANCE PFE
+================================================================================
+Institut de Génie Appliqué (IGA)
+Cycle ingénieur 5DLTI
+Année universitaire 2025 / 2026
+Stage : GM-Soft — Béni Mellal — Pôle Développement
+
+Présenté par     : Kassimi
+Encadrant        : M. Bouchib Riyami
+Organisme        : GM-Soft (German Moroccan Software Company)
+
+Fichiers associés
+  PowerPoint     : Presentation_Soutenance_Jury_FanConnect_2030.pptx
+  HTML (répéter) : docs/rapport/Soutenance_FanConnect_2030.html
+  Générer le PPT : docs/rapport/generate-jury-pptx.cmd
+
+Durée orale visée : 15–20 minutes + démonstration + questions
+
+
+================================================================================
+1. PAGE DE GARDE
+================================================================================
+Titre     : FanConnect 2030
+Sous-titre: Plateforme intelligente de réservation de cafés
+            pour regarder les matchs — Coupe du Monde 2030
+Type      : Soutenance de PFE  ·  2025 / 2026
+Filière   : 5DLTI
+Stage     : Pôle Développement  ·  GM-Soft Béni Mellal
+
+Note orale
+  Saluer le jury. Une phrase : FanConnect relie match, café et réservation,
+  réalisé en stage chez GM-Soft Béni Mellal. Enchaîner sur l'entreprise
+  (40 secondes).
+
+
+================================================================================
+2. PRÉSENTATION DE L'ENTREPRISE D'ACCUEIL  (1 SLIDE SEULEMENT)
+================================================================================
+Nom              : GM-Soft (German Moroccan Software Company)
+Marque           : GM-SOFT  ·  Made in Germany
+Secteur          : SSII maroco-allemande
+                   Conception, intégration et évolution de logiciels métier
+                   (ERP, POS, café, hôtel, web / mobile)
+
+Siège            : Béni Mellal — Boulevard Hassan II
+                   Imm N°55, App N°9
+Sites            : Casablanca, Rabat, Allemagne
+Création         : 2014  ·  SARL  ·  +10 ans
+Contact public   : contact@gmsoft.ma  ·  gmsoft.ma  ·  +212 661-941341
+
+Solutions        : GM-ERP
+                   GM-POS
+                   GM-CAFE
+                   GM-HOTEL
+                   web / mobile, sécurité, support
+
+Équipe d'accueil : Pôle Développement
+                   Lien métier direct avec l'offre GM-CAFE
+
+Mon rôle         : Conception
+                   Développement full-stack (React + Spring Boot)
+                   Service IA d'occupation
+                   Documentation du PFE
+
+Note orale (40 s max)
+  Nom, siège Béni Mellal, solutions (citer GM-CAFE).
+  Ton rôle : full-stack + IA. Puis passer au projet.
+
+
+================================================================================
+3. CONTEXTE DU PROJET
+================================================================================
+Titre : Le match se joue aussi au café.
+
+Texte
+  À l'approche de la Coupe du Monde 2030 au Maroc, les supporters cherchent
+  un lieu proche et disponible. Les cafés n'ont pas d'outil pour gérer
+  réservations, occupation et jour de match. WhatsApp et le téléphone
+  restent la norme.
+
+Chiffres clés
+  2030          Coupe du Monde au Maroc
+  3 rôles       Fan, Owner, Admin
+  1 plateforme  Match + lieu + paiement + IA
+  4 mois        Stage GM-Soft  ·  Avril → Juillet
+
+Phrase de synthèse
+  FanConnect 2030 prolonge GM-CAFE : digitaliser le café le jour du match —
+  calendrier sportif, géolocalisation, réservation, paiement et occupation
+  prédictive.
+
+Note orale
+  Contexte métier, pas l'entreprise. CDM 2030, cafés saturés, pas d'outil.
+  Lien GM-CAFE en une phrase.
+
+
+================================================================================
+4. PROBLÉMATIQUE
+================================================================================
+Question du PFE
+
+  Comment concevoir une plateforme fiable, sécurisée et intelligente
+  permettant aux supporters de réserver un lieu adapté pour un match,
+  tout en aidant les cafés à anticiper l'affluence — dans le contexte
+  de la CDM 2030 ?
+
+Trois axes
+  Métier        Unifier match, lieu, table et paiement dans un seul parcours.
+  Occupation    Estimer l'affluence avant le coup d'envoi.
+  Architecture  Séparer API métier, interface et service d'apprentissage.
+
+Note orale
+  Lire la problématique une fois, posément. Les trois axes structurent
+  le reste de la soutenance.
+
+
+================================================================================
+5. OBJECTIFS
+================================================================================
+Objectif général
+  Concevoir et réaliser une plateforme web sécurisée de réservation de
+  cafés pour le jour de match, avec recommandation géolocalisée et
+  prédiction d'occupation.
+
+Quatre cibles
+  01  Parcours fan     Match → lieu → table → paiement → ticket QR
+  02  Outil owner      Établissement, occupation live, check-in
+  03  Pilotage admin   Validation, analytics, compétitions
+  04  IA utile         Prédiction d'affluence + recommandation
+
+Périmètre
+  DANS  : Web SPA, API REST, Stripe test, IA d'occupation, Docker, 3 rôles
+  HORS  : Application mobile native, Stripe live, billetterie stade
+
+Note orale
+  Le jury aime un périmètre net : dire ce qui est livré ET ce qui est exclu.
+
+
+================================================================================
+6. ANALYSE DES BESOINS
+================================================================================
+Titre : Le trou : match + café + IA.
+
+Comparatif
+  Solution                 Ce qu'elle fait              Ce qui manque
+  -----------------------  ---------------------------  --------------------------------
+  TheFork / OpenTable      Réservation resto            Pas de calendrier sport
+  Billetterie stade        Tickets d'événement          Ignore les cafés de diffusion
+  WhatsApp / Facebook      Simple, déjà adopté          Pas d'occupation ni de paiement
+  Sites de cafés isolés    Identité du lieu             Pas de vision multi-établissements
+
+Synthèse
+  Aucune offre n'unit calendrier football, géolocalisation, réservation,
+  paiement et occupation prédictive. C'est le positionnement de FanConnect.
+
+Note orale
+  Ne pas dénigrer TheFork : ils excellent sur le resto, mais ignorent
+  le jour de match. Le besoin est à l'intersection des trois mondes.
+
+
+================================================================================
+7. FONCTIONNALITÉS
+================================================================================
+Exigences fonctionnelles
+  ID     Fonctionnalité                                      Acteur
+  -----  --------------------------------------------------  -----------
+  EF01   Inscription et authentification JWT                 Tous
+  EF02   Match Center Coupe du Monde                         Fan
+  EF03   Recherche et filtrage des établissements            Fan
+  EF04   Wizard de réservation multi-étapes                  Fan
+  EF05   Paiement en ligne Stripe                            Fan
+  EF06   Recommandations (proximité + affluence)             Fan
+  EF07   Prédiction d'occupation (IA)                        Fan / Owner
+  EF08   Gestion business, occupation, check-in QR           Owner
+  EF09   Modération, analytics, compétitions                 Admin
+
+Exigences non fonctionnelles
+  Sécurité         JWT, rôles FAN / OWNER / ADMIN, secrets dans .env
+  Performance      API métier < 2 s
+  Maintenabilité   Couches, Flyway, OpenAPI / Swagger
+  Portabilité      Docker Compose
+  UI               Responsive, 3 espaces isolés
+  Paiement         PCI-DSS via Stripe (aucune carte stockée)
+
+Note orale
+  Cœur différenciant : EF04 à EF07.
+  Les ENF anticipent les questions sécurité / Docker / Stripe.
+
+
+================================================================================
+8. CONCEPTION UML
+================================================================================
+Titre : Trois acteurs, un modèle métier.
+
+Acteurs
+  Fan (supporter)
+  Propriétaire de café (Owner)
+  Administrateur
+
+Scénario nominal
+  1. Connexion JWT
+  2. Choix du match (Match Center)
+  3. Cafés recommandés (distance + IA)
+  4. Wizard : lieu, espace, table
+  5. Paiement Stripe → ticket QR
+  6. Check-in owner le jour J
+
+Modèle métier (phrase clé)
+  Un User réserve une table d'un Business pour un FootballMatch.
+
+Entités
+  User            FAN / OWNER / ADMIN
+  Business        Café, capacité, statut
+  FootballMatch   Compétition, kickoff
+  Reservation     Statut, ticket QR
+  Payment         Stripe, commission
+  Occupancy       Live + snapshots IA
+
+Diagrammes du rapport
+  Cas d'utilisation  : docs/rapport/diagrams/01-cas-utilisation.png
+  Classes            : docs/rapport/diagrams/02-classes.png
+  Séquence 1         : docs/rapport/ppt-assets/03-sequence-1-crop.png
+  Séquence 2         : docs/rapport/diagrams/04-sequence-2.png
+
+Note orale
+  Phrase clé : un User réserve une table d'un Business pour un FootballMatch.
+  Scénario = celui de la démo.
+
+
+================================================================================
+9. ARCHITECTURE
+================================================================================
+Titre : 3-tiers + microservice IA.
+
+Présentation
+  React 18 · Vite · Tailwind
+  SPA Fan / Owner / Admin
+
+Application
+  Spring Boot 3 · Java 21
+  REST, JWT, JPA, OpenAPI
+  Port typique : 8080 ou 9090 (dev)
+
+Données
+  PostgreSQL 16 · Flyway
+  users, matchs, bookings, occupancy
+
+Service IA (découplé)
+  FastAPI · Python
+  Random Forest
+  /predict  ·  /train
+  Appelé par l'API Java (pas par le navigateur)
+
+Intégrations
+  Stripe (paiement PCI)
+  Docker Compose
+  Nginx / HTTPS en production
+
+Flux
+  Navigateur → Spring Boot → PostgreSQL
+  Spring Boot → service Python (IA)
+  Spring Boot → Stripe (PaymentIntent)
+  Aucun numéro de carte n'est stocké.
+
+Note orale
+  Dessiner l'architecture à l'oral. Stripe n'est jamais dans la base.
+
+
+================================================================================
+10. TECHNOLOGIES UTILISÉES
+================================================================================
+  Spring Boot 3     API REST
+  React 18          SPA
+  PostgreSQL 16     SGBDR
+  Python            Modèle ML
+  FastAPI           Service IA
+  Stripe            Paiement (mode test)
+  JWT               Authentification stateless
+  Docker            Déploiement reproductible
+  OpenAPI/Swagger   Documentation interactive
+  Vite              Build frontend
+  Tailwind CSS      UI
+  Java 21           Backend
+
+Justifications types (si question)
+  Spring Boot  : écosystème, Spring Security, JPA, maintenabilité
+  FastAPI      : Python/ML, cycle d'entraînement indépendant de l'API Java
+  PostgreSQL   : relationnel, Flyway, robustesse
+  Stripe       : PCI-DSS, aucun PAN en base
+
+
+================================================================================
+11. RÉALISATION
+================================================================================
+Titre : Découvrir, réserver, piloter.
+
+Écrans (captures)
+  Accueil                  ppt-assets/01-accueil-hero_16x9.jpg
+  Wizard de réservation    ppt-assets/08-booking-wizard_16x9.jpg
+  Dashboard Owner          ppt-assets/09-owner-dashboard_16x9.jpg
+  Dashboard Admin          ppt-assets/05-admin-dashboard_16x9.jpg
+
+Autres écrans disponibles
+  Liste des cafés          ppt-assets/03-liste-cafes_16x9.jpg
+  Fiche café + occupation  ppt-assets/10-cafe-details-occupation_16x9.jpg
+  Login JWT                ppt-assets/04-login_16x9.jpg
+  Espace fan / tickets     ppt-assets/11-fan-dashboard_16x9.jpg
+  Paiement Stripe          ppt-assets/12-paiement-stripe_16x9.jpg
+  Intelligence occupation  ppt-assets/13-intelligence-occupation_16x9.jpg
+
+Cœur métier livré
+  Vérification documentaire des établissements
+  Occupation live
+  Check-in QR
+  Analytics par ville
+  Rôles FAN / OWNER / ADMIN isolés dans l'UI et l'API
+
+Paiement (à citer si question)
+  1. PaymentIntent créé côté Spring (montant et commission serveur)
+  2. Checkout Stripe — aucun PAN stocké
+  3. Confirmation PAID → réservation confirmée
+  4. Ticket QR unique, PDF, check-in owner le jour J
+  Mode test PFE. Carte test : 4242 4242 4242 4242
+
+Note orale
+  40 secondes. La démo montrera le parcours. Ici : preuve visuelle
+  des 3 espaces.
+
+
+================================================================================
+12. INTELLIGENCE ARTIFICIELLE
+================================================================================
+Titre : Prédire l'affluence, recommander le lieu.
+
+Modèle
+  Algorithme   Random Forest (scikit-learn)
+  Service      FastAPI / Python
+  Features     occupation courante, historique, horizon avant kickoff,
+               fraîcheur du report owner (15 min)
+
+Sorties
+  Prédictions à 1 h, 2 h et coup d'envoi
+  Niveau de risque : LOW / MEDIUM / HIGH
+  Recommandation textuelle
+
+Recommandation de lieux
+  Rayon progressif 5 → 10 → 20 km jusqu'à au moins 3 résultats
+  Score distance × occupation
+  Codes métier (ex. CLOSEST_LOW_CROWD)
+
+FanBot
+  Assistant d'intentions : match, café, réservation
+  Fallback déterministe si l'API LLM est indisponible
+
+OccupancyEngine (côté Java)
+  Mélange report owner (vérité terrain si < 15 min)
+  + signaux de réservation (check-in, confirmés, pending)
+  Walk-ins pris en compte via le report owner
+
+Honnêteté scientifique
+  Entraînement sur données synthétiques + signaux métier
+  Pas de saison CDM réelle à apprendre
+  Fallback déterministe si le service Python est down
+
+Note orale
+  Dire clairement les limites du modèle. Ne pas vendre une IA magique.
+
+
+================================================================================
+13. DÉMONSTRATION
+================================================================================
+Parcours à montrer (app déjà ouverte avant d'entrer)
+
+  1. Accueil → Match Center
+  2. Lieux sur la carte + occupation
+  3. Wizard + paiement test Stripe (carte 4242…)
+  4. Dashboard Owner, puis Admin
+
+Préparer
+  Comptes Fan / Owner / Admin déjà connectables
+  Docker / backend / frontend lancés
+  Ne pas créer un nouvel établissement en live
+  Si l'IA est down : le fallback s'affiche, l'expliquer
+
+Note orale
+  Ne pas improviser. Suivre les 4 étapes. Commenter ce que le jury voit.
+
+
+================================================================================
+14. RÉSULTATS
+================================================================================
+Titre : Un PFE livré et démontrable.
+
+Livré
+  Plateforme full-stack 3 rôles
+  Stripe test + ticket QR
+  IA d'occupation + recommandations
+  Docker, Swagger, rapport
+
+Apports
+  Architecture n-tiers réelle
+  Sécurité JWT / Stripe
+  ML dans un produit métier
+  Lien métier GM-CAFE
+
+Validation
+  Tests métier : OccupancyEngine, GeoUtils, PaymentCalculator,
+                 RecommendationService, FanAssistant, TicketCodeParser
+  Parcours Fan / Owner / Admin recettés
+  Routes protégées par rôle (UI + API)
+  Health checks backend + IA
+
+Note orale
+  Parler de ce qui est livré, pas de ce qui est promis.
+
+
+================================================================================
+15. LIMITES ET PERSPECTIVES
+================================================================================
+Limites
+  Données IA     Modèle sans saison CDM réelle — MAE à recalibrer en prod
+  Paiement       Stripe mode test. Pas de webhooks live ni facturation réelle
+  Mobile         SPA responsive, pas d'application native
+  Tests          Règles métier unitaires ; parcours recettés manuellement
+
+Perspectives
+  1. FanBot conversationnel enrichi
+  2. Application mobile native
+  3. Données réelles + suivi MAE
+  4. Alertes matchs / occupation
+
+Note orale
+  Le jury valorise les limites assumées.
+  Ne pas promettre une production 2030 déjà prête.
+
+
+================================================================================
+16. CONCLUSION
+================================================================================
+Réponse à la problématique
+
+  Oui : une plateforme n-tiers, sécurisée par JWT et Stripe, permet au fan
+  de réserver un café pour un match, et au propriétaire d'anticiper
+  l'affluence grâce à un moteur d'occupation et un modèle Random Forest.
+
+Quatre points de clôture
+  01  Cadrage      Besoin réel GM-CAFE × CDM 2030, périmètre tenu
+  02  Conception   UML, 3-tiers, microservice IA découplé
+  03  Produit      Trois rôles, parcours complet jusqu'au QR
+  04  Rigueur      Tests métier, Docker, honnêteté sur l'IA
+
+Note orale
+  Refermer la boucle : relire la problématique (slide 4) et y répondre
+  en une phrase. Puis : Merci, questions.
+
+
+================================================================================
+17. QUESTIONS
+================================================================================
+MERCI
+Questions du jury.
+
+FanConnect 2030  ·  Soutenance PFE 5DLTI
+Présenté par Kassimi
+Encadrant académique : M. Bouchib Riyami
+Organisme : GM-Soft  ·  Béni Mellal  ·  2025 / 2026
+
+Attitude
+  Rester debout, sourire
+  Répéter la question avant de répondre
+  Si vous ne savez pas : « Je n'ai pas mesuré X ; voilà comment je le ferais. »
+
+
+================================================================================
+PLAN ORAL RÉCAPITULATIF (~20 MIN)
+================================================================================
+  1–2   Garde + entreprise          1 min
+  3     Contexte                    1 min 30
+  4–5   Problématique + objectifs   2 min
+  6–7   Besoins + fonctionnalités   2 min 30
+  8–10  UML + architecture + stack  4 min
+  11–12 Réalisation + IA            3 min
+  13    Démonstration               4 min
+  14–16 Résultats, limites, conclu  2 min
+  17    Questions                   —
+
+
+================================================================================
+QUESTIONS PROBABLES DU JURY (AIDE-MÉMOIRE)
+================================================================================
+Q  Stockez-vous les cartes bancaires ?
+R  Non. Stripe PCI-DSS, PaymentIntent côté serveur, mode test.
+
+Q  Pourquoi FastAPI à part et pas le ML dans Spring ?
+R  Python / scikit-learn, cycle d'entraînement indépendant,
+   l'API Java reste le point d'entrée.
+
+Q  L'IA est-elle fiable sans données CDM réelles ?
+R  Non au sens production. Random Forest + signaux métier + fallback.
+   À recalibrer avec des données réelles (MAE).
+
+Q  Comment est calculée l'occupation ?
+R  OccupancyEngine : report owner frais (15 min) = vérité terrain
+   (walk-ins inclus). Sinon estimation à partir des réservations
+   (check-in + confirmés × 0,85 + pending × 0,60).
+
+Q  Comment isolez-vous les 3 rôles ?
+R  Routes React protégées (FanRoute / OwnerRoute / AdminRoute)
+   + Spring Security (rôles sur les endpoints).
+
+Q  Pourquoi 5 puis 10 puis 20 km ?
+R  Un rayon fixe de 5 km peut vider la liste. Expansion jusqu'à
+   au moins 3 établissements.
+
+Q  Qu'est-ce qui est hors périmètre et pourquoi ?
+R  Mobile natif, Stripe live, billets de stade : 4 mois, livrable
+   démontrable, stack open source / freemium.
+
+
+================================================================================
+STACK TECHNIQUE DÉTAILLÉE
+================================================================================
+Frontend   React 18, Vite 5, Tailwind CSS, Axios, React Router 6
+Backend    Java 21, Spring Boot 3.3, Spring Security + JWT, Spring Data JPA
+Base       PostgreSQL 16, Flyway
+IA         Python, FastAPI, scikit-learn (Random Forest)
+Paiement   Stripe (mode test)
+DevOps     Docker, Docker Compose, Nginx
+Docs API   SpringDoc OpenAPI / Swagger
+Repo       Monorepo : frontend/  backend/  ai-service/  database/
+
+
+================================================================================
+URLS DE DÉVELOPPEMENT
+================================================================================
+Frontend     http://localhost:5173
+Backend      http://localhost:8080/api   (ou 9090 selon .env)
+Swagger      http://localhost:8080/api/swagger-ui.html
+PostgreSQL   localhost:5432  (parfois 5433 en dev Docker)
+
+
+================================================================================
+FIN DU FICHIER
+================================================================================
+Document généré pour la soutenance PFE FanConnect 2030.
+À imprimer ou à garder ouvert à côté des notes PowerPoint (touche N).
+================================================================================

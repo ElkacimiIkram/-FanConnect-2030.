@@ -1,0 +1,105 @@
+@startuml FanConnect_2030_Sequence_Checkin
+title Diagramme de séquence — Ticket QR, identifiant et check-in\nOwnerTicketService + TicketCodeParser  ·  UML 2.5
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer Payload QR = FANCONNECT|TICKET|FC-XXXXXXXX    ·    Un check-in unique par ticket    ·    Lié au café de l'owner
+
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam maxMessageSize 250
+skinparam ParticipantPadding 10
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+}
+
+actor Fan
+participant "Ticket PDF / écran" as TKT
+actor "Propriétaire" as Owner
+participant "Frontend Owner\n(scan caméra)" as UI
+participant "OwnerTicketService" as API
+participant "TicketCodeParser" as PAR
+database "PostgreSQL" as DB
+participant "LiveOccupancyService" as LIVE
+participant "NotificationService" as NOTIF
+
+== Génération (rappel — après paiement) ==
+note over Fan, TKT
+  ticketCode = "FC-" + 8 caractères UUID
+  QR = "FANCONNECT|TICKET|" + ticketCode
+end note
+Fan -> TKT : présente le QR à l'entrée du café
+
+== Vérification (cas de base) ==
+Owner -> UI : scanne le QR (ou saisit le code)
+UI -> API : POST /owner/tickets/verify { raw }
+activate API
+API -> PAR : normalize(raw)
+activate PAR
+PAR -> PAR : si préfixe FANCONNECT|TICKET|\nalors extraire FC-XXXXXXXX
+PAR --> API : ticketCode
+deactivate PAR
+
+API -> DB : findByTicketCode **AND** business.ownerId = owner courant
+DB --> API : Reservation ou vide
+
+alt ticket introuvable ou autre café
+  API --> UI : valid=false\n« n'appartient pas à vos établissements »
+else status = PENDING
+  API --> UI : valid=false  « paiement non effectué »
+else status = CANCELLED
+  API --> UI : valid=false  « ticket annulé »
+else status = CHECKED_IN
+  API --> UI : valid=true, alreadyCheckedIn=true\n« déjà utilisé »
+else status = CONFIRMED
+  API --> UI : valid=true, canCheckIn=true\nfan, table, match, partySize
+end
+deactivate API
+
+== Check-in  <<extend>>  condition : CONFIRMED ==
+Owner -> UI : valider l'entrée
+UI -> API : POST /owner/tickets/check-in { raw }
+activate API
+API -> PAR : normalize(raw)
+API -> DB : même recherche (ticket + owner)
+
+alt déjà CHECKED_IN
+  API --> UI : alreadyCheckedIn (idempotent)
+else pas CONFIRMED
+  API --> UI : 400 « ticket non valide pour le check-in »
+else OK
+  API -> DB : status=CHECKED_IN, checkedInAt=now
+  API -> LIVE : recordCheckIn(+ partySize)\nsource = CHECK_IN_AUTO
+  activate LIVE
+  LIVE -> DB : INSERT LiveOccupancy\ncurrent = min(capa, ancien + partySize)
+  LIVE --> API
+  deactivate LIVE
+  API -> NOTIF : TICKET_CHECKED_IN → fan
+  API --> UI : check-in confirmé
+  NOTIF --> Fan : « Bienvenue, bon match »
+end
+deactivate API
+
+legend right
+  |= Règle |= Détail |
+  | Identifiant | FC- + UUID court, unique en base |
+  | QR | Préfixe métier pour éviter un code ambigu |
+  | Isolation | Un owner ne scanne **que** ses cafés |
+  | Unicité | 2e scan → déjà utilisé, pas de double occupation |
+  | Occupation | Check-in incrémente le comptage live |
+endlegend
+
+@enduml

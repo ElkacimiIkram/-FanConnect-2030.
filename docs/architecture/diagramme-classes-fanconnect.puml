@@ -1,0 +1,352 @@
+@startuml Diagramme_de_classes_FanConnect_2030
+' =============================================================================
+' FanConnect 2030 — Diagramme de classes (domaine métier)
+' Générer : https://www.plantuml.com/plantuml  ou  plantuml diagramme-classes-fanconnect.puml
+' =============================================================================
+
+title Diagramme de classes — FanConnect 2030\nModèle métier (entités JPA)
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam packageFontSize 13
+skinparam linetype polyline
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+  ArrowColor #0F9F58
+  HeaderBackgroundColor #111827
+  FontColor #0A0E1A
+}
+skinparam package {
+  BackgroundColor #F1F5F9
+  BorderColor #243044
+}
+skinparam enum {
+  BackgroundColor #ECFDF3
+  BorderColor #0F9F58
+}
+hide circle
+hide empty methods
+
+' -----------------------------------------------------------------------------
+package "Commun" {
+  abstract class BaseEntity {
+    # id : Long
+    # createdAt : Instant
+    # updatedAt : Instant
+  }
+}
+
+' -----------------------------------------------------------------------------
+package "Utilisateurs & notifications" {
+  class User {
+    - email : String
+    - password : String
+    - firstName : String
+    - lastName : String
+    - phone : String
+    - city : String
+    - role : Role
+    - enabled : boolean
+  }
+
+  class Notification {
+    - id : Long
+    - type : NotificationType
+    - title : String
+    - message : String
+    - read : boolean
+    - entityType : String
+    - entityId : Long
+    - createdAt : Instant
+  }
+
+  enum Role {
+    FAN_USER
+    BUSINESS_OWNER
+    ADMIN
+  }
+
+  enum NotificationType {
+    BUSINESS_PENDING
+    BUSINESS_APPROVED
+    BUSINESS_REJECTED
+    RESERVATION_CONFIRMED
+    PAYMENT_COMPLETED
+    TICKET_CHECKED_IN
+    OWNER_NEW_BOOKING
+  }
+}
+
+' -----------------------------------------------------------------------------
+package "Établissements partenaires" {
+  class Business {
+    - name : String
+    - businessType : BusinessType
+    - description : String
+    - country : String
+    - city : String
+    - address : String
+    - latitude : BigDecimal
+    - longitude : BigDecimal
+    - totalCapacity : int
+    - totalTables : int
+    - status : BusinessStatus
+    - coverImageUrl : String
+    - verificationComplete : boolean
+  }
+
+  class BusinessSpace {
+    - name : String
+    - spaceType : SpaceType
+    - description : String
+    - capacity : int
+    - numberOfTables : int
+    - matchDayPrice : BigDecimal
+  }
+
+  class BusinessTable {
+    - tableNumber : String
+    - capacity : int
+    - active : boolean
+  }
+
+  class BusinessImage {
+    - id : Long
+    - imageUrl : String
+    - sortOrder : int
+  }
+
+  class MenuImage {
+    - id : Long
+    - imageUrl : String
+    - sortOrder : int
+  }
+
+  class VerificationDocument {
+    - id : Long
+    - documentType : DocumentType
+    - storageKey : String
+    - originalName : String
+    - mimeType : String
+    - status : DocumentStatus
+    - rejectionNote : String
+    - uploadedAt : Instant
+  }
+
+  class BusinessApproval {
+    - id : Long
+    - status : BusinessStatus
+    - rejectionReason : String
+    - adminNotes : String
+    - submittedAt : Instant
+    - reviewedAt : Instant
+  }
+
+  enum BusinessType {
+    CAFE
+    RESTAURANT
+  }
+
+  enum BusinessStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    DISABLED
+  }
+
+  enum SpaceType {
+    TERRACE
+    INDOOR_HALL
+    VIP_ROOM
+    FAMILY_AREA
+    WOMEN_AREA
+    OTHER
+  }
+
+  enum DocumentType {
+    NATIONAL_ID
+    BUSINESS_REGISTRATION
+    BUSINESS_LICENSE
+    EXTERIOR_PHOTO
+  }
+
+  enum DocumentStatus {
+    UPLOADED
+    APPROVED
+    REJECTED
+    REPLACED
+  }
+}
+
+' -----------------------------------------------------------------------------
+package "Compétitions & matchs" {
+  class Competition {
+    - name : String
+    - slug : String
+    - category : CompetitionCategory
+    - season : String
+    - externalCode : String
+    - active : boolean
+    - startDate : Instant
+    - endDate : Instant
+  }
+
+  class FootballMatch {
+    - externalId : String
+    - competition : String
+    - homeTeam : String
+    - awayTeam : String
+    - matchDate : Instant
+    - venueName : String
+    - city : String
+    - groupName : String
+    - roundLabel : String
+    - homeScore : Integer
+    - awayScore : Integer
+    - matchMinute : Integer
+    - status : MatchStatus
+    - lastSyncedAt : Instant
+  }
+
+  enum CompetitionCategory {
+    WORLD_CUP
+    CHAMPIONS_LEAGUE
+    CAF
+    LEAGUE
+    FRIENDLY
+    OTHER
+  }
+
+  enum MatchStatus {
+    SCHEDULED
+    LIVE
+    FINISHED
+    CANCELLED
+  }
+}
+
+' -----------------------------------------------------------------------------
+package "Réservations, paiements & occupation" {
+  class Reservation {
+    - reservationDateTime : LocalDateTime
+    - partySize : int
+    - status : ReservationStatus
+    - specialRequests : String
+    - totalPrice : BigDecimal
+    - ticketCode : String
+    - checkedInAt : Instant
+  }
+
+  class Payment {
+    - amount : BigDecimal
+    - platformFee : BigDecimal
+    - ownerPayout : BigDecimal
+    - currency : String
+    - status : PaymentStatus
+    - paymentMethod : String
+    - stripePaymentIntentId : String
+    - paidAt : Instant
+  }
+
+  class BusinessLiveOccupancy {
+    - id : Long
+    - currentCustomers : int
+    - availableSeats : Integer
+    - occupancyPercent : BigDecimal
+    - source : String
+    - reportedAt : Instant
+  }
+
+  class OccupancySnapshot {
+    - id : Long
+    - snapshotAt : Instant
+    - capacity : int
+    - checkedInSeats : int
+    - confirmedNotArrived : int
+    - pendingReservations : int
+    - effectiveOccupancy : int
+    - occupancyPercent : BigDecimal
+    - level : OccupancyLevel
+  }
+
+  enum ReservationStatus {
+    PENDING
+    CONFIRMED
+    CANCELLED
+    CHECKED_IN
+  }
+
+  enum PaymentStatus {
+    PENDING
+    PAID
+    FAILED
+    REFUNDED
+  }
+
+  enum OccupancyLevel {
+    GREEN
+    ORANGE
+    RED
+  }
+}
+
+' --- Héritage ---------------------------------------------------------------
+BaseEntity <|-- User
+BaseEntity <|-- Business
+BaseEntity <|-- BusinessSpace
+BaseEntity <|-- BusinessTable
+BaseEntity <|-- Competition
+BaseEntity <|-- FootballMatch
+BaseEntity <|-- Reservation
+BaseEntity <|-- Payment
+
+' --- Relations utilisateurs -------------------------------------------------
+User "1" -- "0..*" Business : possède >
+User "1" -- "0..*" Reservation : effectue >
+User "1" -- "0..*" Notification : reçoit >
+User "1" -- "0..*" BusinessApproval : examine >
+User "1" -- "0..*" VerificationDocument : dépose >
+User "1" -- "0..*" BusinessLiveOccupancy : signale >
+
+' --- Relations établissements ----------------------------------------------
+Business "1" *-- "1..*" BusinessSpace : espaces
+BusinessSpace "1" *-- "1..*" BusinessTable : tables
+Business "1" *-- "0..*" BusinessImage : galerie
+Business "1" *-- "0..*" MenuImage : menus
+Business "1" *-- "0..*" VerificationDocument : pièces
+Business "1" *-- "0..*" BusinessApproval : historique validation
+Business "1" -- "0..1" User : validé par >
+
+' --- Relations matchs ------------------------------------------------------
+Competition "1" -- "0..*" FootballMatch : programme
+
+' --- Cœur métier : réservation match-day -----------------------------------
+Reservation "}"--"0..1" Business
+Reservation "}"--"0..1" BusinessSpace
+Reservation "}"--"0..1" BusinessTable
+Reservation "}"--"0..1" FootballMatch
+Reservation "1" -- "0..1" Payment : paiement
+
+' --- Intelligence d'occupation ---------------------------------------------
+Business "1" -- "0..*" BusinessLiveOccupancy
+FootballMatch "1" -- "0..*" BusinessLiveOccupancy
+Business "1" -- "0..*" OccupancySnapshot
+FootballMatch "1" -- "0..*" OccupancySnapshot
+
+note right of Reservation
+  Cœur du métier :
+  un fan réserve une **table**
+  d'un **café partenaire**
+  pour un **match** CDM.
+end note
+
+note bottom of OccupancySnapshot
+  Historique utilisé par
+  le service IA (Random Forest)
+  pour prédire l'affluence.
+end note
+
+@enduml

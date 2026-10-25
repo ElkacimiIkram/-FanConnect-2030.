@@ -1,0 +1,16 @@
+Cahier des charges FanConnect 2030
+=================================
+
+Fichier a ouvrir :
+
+  docs\Cahier_des_charges_FanConnect_2030.md
+
+- Double-clic : s'ouvre dans VS Code / Cursor / Word
+- Dans Word : Fichier > Ouvrir > choisir le .md  (ou copier-coller)
+
+Comment s'en servir pour le PFE
+-------------------------------
+Analyse UML     : chapitres 6, 8, 9, 10
+Conception UML  : chapitres 11, 12, 16, annexe B
+Tests / recette : chapitre 17
+Matrice EF->UML : chapitre 18.2

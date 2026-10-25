@@ -1,0 +1,3 @@
+-- FanConnect 2030 — Flyway baseline
+-- Schema created by database/init scripts or prior Hibernate runs.
+-- Subsequent migrations evolve the schema in a versioned way.

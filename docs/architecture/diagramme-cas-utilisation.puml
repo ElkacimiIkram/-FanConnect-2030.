@@ -1,0 +1,70 @@
+@startuml Diagramme_cas_utilisation_FanConnect_2030
+' Version simple et claire — 1 page / 1 diapo
+' Générer : https://www.plantuml.com/plantuml
+
+title Diagramme de cas d'utilisation — FanConnect 2030
+
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+}
+skinparam actor {
+  BackgroundColor #ECFDF3
+  BorderColor #0F9F58
+}
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #243044
+}
+
+actor "Fan\n(supporter)" as Fan
+actor "Propriétaire\nde café" as Owner
+actor "Administrateur" as Admin
+
+rectangle "FanConnect 2030" {
+  usecase "S'inscrire / se connecter" as UC_Auth
+  usecase "Consulter les matchs" as UC_Match
+  usecase "Trouver un café" as UC_Cafe
+  usecase "Demander à FanBot" as UC_Bot
+  usecase "Réserver une table" as UC_Book
+  usecase "Payer en ligne" as UC_Pay
+  usecase "Obtenir le ticket QR" as UC_Ticket
+
+  usecase "Déposer son établissement" as UC_Submit
+  usecase "Gérer l'occupation live" as UC_Occup
+  usecase "Valider le check-in" as UC_Checkin
+
+  usecase "Valider un café" as UC_Approve
+  usecase "Superviser la plateforme" as UC_Admin
+}
+
+Fan --> UC_Auth
+Fan --> UC_Match
+Fan --> UC_Cafe
+Fan --> UC_Bot
+Fan --> UC_Book
+UC_Book ..> UC_Pay : <<include>>
+UC_Pay ..> UC_Ticket : <<include>>
+
+Owner --> UC_Auth
+Owner --> UC_Submit
+Owner --> UC_Occup
+Owner --> UC_Checkin
+
+Admin --> UC_Auth
+Admin --> UC_Approve
+Admin --> UC_Admin
+
+UC_Submit ..> UC_Approve : <<extend>>\n(après dépôt)
+
+note bottom of UC_Book
+  Scénario principal :
+  match → café → table → paiement → QR
+end note
+
+@enduml

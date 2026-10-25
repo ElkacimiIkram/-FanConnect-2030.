@@ -1,0 +1,11 @@
+COMMENT VOIR LES DIAGRAMMES (pas le code)
+
+1. Reviens a la racine du projet FanConnect-2030
+2. Double-clique :  OUVRIR_LES_DIAGRAMMES.bat
+3. Chrome ou Edge s'ouvre avec les DESSINS
+
+Ne pas ouvrir les fichiers .svg / .puml dans Cursor, VS Code ou Grok :
+ce sont du texte, l'editeur affiche le code.
+
+Pour PowerPoint : dans la page du navigateur, clique "Telecharger PNG"
+puis Insertion > Images dans PowerPoint.

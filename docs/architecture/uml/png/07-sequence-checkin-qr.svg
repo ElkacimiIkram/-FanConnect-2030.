@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1180" width="1400" height="1180">
+  <defs>
+    <marker id="aq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0F9F58"/>
+    </marker>
+    <marker id="rq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="1180" fill="#FFFFFF"/>
+  <rect width="1400" height="58" fill="#111827"/>
+  <text x="700" y="24" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#FFFFFF">Diagramme de séquence — Ticket QR, identifiant et check-in</text>
+  <text x="700" y="46" text-anchor="middle" font-family="Arial" font-size="12" fill="#A7F3D0">Payload FANCONNECT|TICKET|FC-XXXXXXXX  ·  isolation par owner  ·  un seul check-in  ·  occupation +partySize</text>
+
+  <g font-family="Arial" font-size="12" text-anchor="middle">
+    <rect x="20" y="74" width="90" height="44" rx="6" fill="#ECFDF3" stroke="#0F9F58"/>
+    <text x="65" y="100" font-weight="700" fill="#065F46">Fan</text>
+    <rect x="150" y="74" width="130" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="215" y="100" font-weight="700">Ticket / QR</text>
+    <rect x="320" y="74" width="110" height="44" rx="6" fill="#ECFDF3" stroke="#0F9F58"/>
+    <text x="375" y="100" font-weight="700" fill="#065F46">Owner</text>
+    <rect x="470" y="74" width="150" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="545" y="92" font-weight="700">Front Owner</text>
+    <text x="545" y="108" fill="#64748B">scan caméra</text>
+    <rect x="670" y="74" width="180" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="760" y="92" font-weight="700">OwnerTicketService</text>
+    <text x="760" y="108" fill="#64748B">+ TicketCodeParser</text>
+    <rect x="900" y="74" width="140" height="44" rx="4" fill="#F1F5F9" stroke="#1A2332"/>
+    <text x="970" y="100" font-weight="700">PostgreSQL</text>
+    <rect x="1080" y="74" width="160" height="44" rx="4" fill="#FFFBEB" stroke="#D97706"/>
+    <text x="1160" y="92" font-weight="700" fill="#9A3412">LiveOccupancy</text>
+    <text x="1160" y="108" fill="#B45309">+ Notification</text>
+  </g>
+  <g stroke="#CBD5E1" stroke-width="1.1" stroke-dasharray="4 6">
+    <line x1="65" y1="118" x2="65" y2="860"/>
+    <line x1="215" y1="118" x2="215" y2="860"/>
+    <line x1="375" y1="118" x2="375" y2="860"/>
+    <line x1="545" y1="118" x2="545" y2="860"/>
+    <line x1="760" y1="118" x2="760" y2="860"/>
+    <line x1="970" y1="118" x2="970" y2="860"/>
+    <line x1="1160" y1="118" x2="1160" y2="860"/>
+  </g>
+
+  <rect x="16" y="128" width="1368" height="50" rx="4" fill="#ECFDF3" stroke="#0F9F58"/>
+  <text x="30" y="148" font-family="Arial" font-size="12" font-weight="700" fill="#065F46">Rappel génération (après paiement)</text>
+  <text x="30" y="168" font-family="Arial" font-size="12" fill="#0F172A">ticketCode = "FC-" + 8 car. UUID     ·     QR payload = "FANCONNECT|TICKET|" + ticketCode     ·     stocké sur Reservation</text>
+
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="206" fill="#94A3B8" font-size="10">1</text>
+    <line x1="65" y1="202" x2="215" y2="202" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="75" y="196">présente le QR à l'entrée</text>
+    <text x="4" y="234" fill="#94A3B8" font-size="10">2</text>
+    <line x1="375" y1="230" x2="545" y2="230" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="385" y="224">scanne (ou saisit le code)</text>
+    <text x="4" y="262" fill="#94A3B8" font-size="10">3</text>
+    <line x1="545" y1="258" x2="760" y2="258" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="555" y="252">POST /owner/tickets/verify { raw }</text>
+    <text x="4" y="290" fill="#94A3B8" font-size="10">4</text>
+    <text x="555" y="290">TicketCodeParser.normalize : enlève le préfixe FANCONNECT|TICKET|  →  FC-XXXXXXXX</text>
+    <text x="4" y="318" fill="#94A3B8" font-size="10">5</text>
+    <line x1="760" y1="314" x2="970" y2="314" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="770" y="308">findByTicketCode AND business.ownerId = owner</text>
+  </g>
+
+  <rect x="520" y="336" width="700" height="200" rx="4" fill="#FFFBEB" fill-opacity="0.55" stroke="#D97706" stroke-dasharray="5 3"/>
+  <text x="532" y="354" font-family="Arial" font-size="11" font-weight="700" fill="#D97706">alt  —  résultat de la vérification (cas de base)</text>
+  <text x="532" y="378" font-family="Arial" font-size="12" fill="#DC2626">introuvable / autre café → valid=false  « n'appartient pas à vos établissements »</text>
+  <text x="532" y="400" font-family="Arial" font-size="12" fill="#DC2626">PENDING → invalide (pas payé)     CANCELLED → ticket annulé</text>
+  <text x="532" y="422" font-family="Arial" font-size="12" fill="#D97706">CHECKED_IN → valid=true, alreadyCheckedIn (déjà utilisé)</text>
+  <text x="532" y="448" font-family="Arial" font-size="12" font-weight="700" fill="#065F46">CONFIRMED → valid=true, canCheckIn=true  (fan, table, match, partySize)</text>
+  <text x="532" y="474" font-family="Arial" font-size="12" fill="#0F172A">L'owner PEUT s'arrêter ici (contrôle) sans faire le check-in.</text>
+  <text x="532" y="518" font-family="Arial" font-size="11" fill="#9A3412">C'est pour cela que le check-in est un <<extend>> et pas un <<include>>.</text>
+
+  <rect x="16" y="556" width="1368" height="22" rx="3" fill="#111827"/>
+  <text x="700" y="572" text-anchor="middle" font-family="Arial" font-size="11" fill="#FFFFFF">Check-in  <<extend>>  condition [ticket CONFIRMED]</text>
+
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="606" fill="#94A3B8" font-size="10">6</text>
+    <line x1="375" y1="602" x2="545" y2="602" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="385" y="596">valider l'entrée</text>
+    <text x="4" y="634" fill="#94A3B8" font-size="10">7</text>
+    <line x1="545" y1="630" x2="760" y2="630" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="555" y="624">POST /owner/tickets/check-in</text>
+    <text x="4" y="662" fill="#94A3B8" font-size="10">8</text>
+    <line x1="760" y1="658" x2="970" y2="658" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="770" y="652">status=CHECKED_IN  ·  checkedInAt=now</text>
+    <text x="4" y="690" fill="#94A3B8" font-size="10">9</text>
+    <line x1="760" y1="686" x2="1160" y2="686" stroke="#D97706" stroke-width="1.5" marker-end="url(#aq)"/>
+    <text x="780" y="680">recordCheckIn(+ partySize)  source=CHECK_IN_AUTO</text>
+    <text x="4" y="718" fill="#94A3B8" font-size="10">10</text>
+    <text x="555" y="718">current = min(capa, ancien + partySize)  ·  notif fan TICKET_CHECKED_IN</text>
+    <text x="4" y="746" fill="#94A3B8" font-size="10">11</text>
+    <line x1="1160" y1="742" x2="65" y2="742" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#rq)"/>
+    <text x="300" y="736" fill="#64748B">« Bienvenue, bon match »</text>
+  </g>
+
+  <rect x="20" y="880" width="1360" height="280" rx="8" fill="#F8FAFC" stroke="#1A2332"/>
+  <text x="40" y="908" font-family="Arial" font-size="14" font-weight="700" fill="#111827">Identifiant + QR — 4 règles à citer</text>
+  <text x="40" y="936" font-family="Arial" font-size="13" fill="#0F172A">1. Identifiant métier unique : FC- + UUID court, persisté sur Reservation.ticketCode — pas un ID technique auto-incrémenté exposé.</text>
+  <text x="40" y="960" font-family="Arial" font-size="13" fill="#0F172A">2. QR préfixé : FANCONNECT|TICKET|…  → le parser accepte le scan brut OU le code seul (saisie manuelle).</text>
+  <text x="40" y="984" font-family="Arial" font-size="13" fill="#0F172A">3. Isolation : la requête SQL joint ticketCode ET owner du business. Un owner ne check-in pas le client d'un autre café.</text>
+  <text x="40" y="1008" font-family="Arial" font-size="13" fill="#0F172A">4. Unicité : 2e scan → alreadyCheckedIn, pas de double occupation. Idempotent.</text>
+  <text x="40" y="1036" font-family="Arial" font-size="13" font-weight="700" fill="#065F46">Phrase : « Le QR n'est pas un décor. C'est un identifiant préfixé, lié à une résa payée, scannable uniquement par le propriétaire du café. »</text>
+  <text x="40" y="1064" font-family="Arial" font-size="12" fill="#64748B">Fichiers : OwnerTicketServiceImpl.java  ·  TicketCodeParser.java  ·  TicketPdfServiceImpl.java (ZXing)  ·  LiveOccupancyServiceImpl.recordCheckIn</text>
+  <text x="40" y="1088" font-family="Arial" font-size="13" fill="#0F172A">UML : Vérifier = cas de base. Check-in = extend [CONFIRMED]. C'est la bonne notation : on peut vérifier sans valider l'entrée.</text>
+</svg>

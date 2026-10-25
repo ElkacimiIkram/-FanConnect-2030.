@@ -1,0 +1,127 @@
+@startuml FanConnect_2030_Sequence_Auth
+title Diagramme de séquence — Authentification JWT\nUC02 S'authentifier  ·  UML 2.5
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer Messages pleins = appels synchrones    ·    Pointillés = retours    ·    alt / opt = fragments UML
+
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 220
+skinparam ParticipantPadding 12
+skinparam BoxPadding 8
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+  BoxBackgroundColor #F8FAFC
+  BoxBorderColor #1A2332
+}
+
+actor "Utilisateur\n(Fan / Owner / Admin)" as U
+participant "Frontend React\nAuthContext" as UI
+participant "AuthController\nPOST /auth" as C
+participant "AuthService" as S
+participant "AuthenticationManager\n+ BCrypt" as AM
+participant "JwtService" as JWT
+database "PostgreSQL\nusers" as DB
+
+== Inscription (UC01) — Fan ou Owner uniquement ==
+U -> UI : formulaire (email, mot de passe, rôle, ville)
+UI -> C : POST /auth/register
+activate C
+C -> S : register(request)
+activate S
+S -> DB : existsByEmail(email)
+DB --> S : false / true
+
+alt email déjà utilisé
+  S --> C : BusinessException
+  C --> UI : 400 Email already registered
+else rôle = ADMIN
+  S --> C : BusinessException
+  note right : Un admin ne s'inscrit pas\nen public (sécurité)
+else OK
+  S -> AM : encode(password)  <<BCrypt>>
+  AM --> S : hash
+  S -> DB : INSERT User (enabled = true)
+  DB --> S : User
+  S -> JWT : generateToken(email, role)
+  activate JWT
+  JWT --> S : JWT signé HS256
+  deactivate JWT
+  S --> C : AuthResponse { token, user }
+  C --> UI : 201 + JWT
+end
+deactivate S
+deactivate C
+UI -> UI : localStorage.set(token, user)
+
+== Connexion (UC02) ==
+U -> UI : email + mot de passe
+UI -> C : POST /auth/login
+activate C
+C -> S : login(request)
+activate S
+S -> AM : authenticate(email, password)
+activate AM
+AM -> DB : SELECT user WHERE email
+DB --> AM : User + hash
+AM -> AM : BCrypt.matches(password, hash)
+
+alt identifiants invalides
+  AM --> S : AuthenticationException
+  S --> C : 401
+  C --> UI : échec connexion
+else OK
+  AM --> S : authentifié
+  deactivate AM
+  S -> JWT : generateToken(email, role)
+  activate JWT
+  JWT --> S : Bearer JWT\n(sub=email, role, exp)
+  deactivate JWT
+  S --> C : AuthResponse
+  C --> UI : 200 + JWT
+end
+deactivate S
+deactivate C
+
+== Requête métier suivante (filtre JWT) ==
+U -> UI : action protégée (ex. réserver)
+UI -> UI : header Authorization: Bearer JWT
+UI -> C : requête /fan/** ou /owner/** ou /admin/**
+activate C
+note over C
+  JwtAuthenticationFilter
+  1. extraire le token
+  2. vérifier signature + expiration
+  3. charger UserDetails
+  4. poser SecurityContext
+  5. SecurityConfig : hasRole(...)
+end note
+C --> UI : 200 ou 403 selon le rôle
+deactivate C
+
+legend right
+  |= Critère séquence UML |= Application ici |
+  | Acteur à gauche | Utilisateur réel |
+  | Lifelines | Composants du système |
+  | Activation (barre) | Période de traitement |
+  | alt | Branche succès / erreur |
+  | Note | Règle de sécurité |
+  | Token stateless | Pas de session serveur |
+endlegend
+
+@enduml

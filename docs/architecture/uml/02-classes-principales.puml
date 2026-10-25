@@ -1,0 +1,302 @@
+@startuml FanConnect_2030_Classes_Principales
+title Diagramme de classes — FanConnect 2030\nClasses principales du domaine  ·  UML 2.5  ·  (sans DTO, contrôleurs, repositories)
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer Composition (*--) = cycle de vie lié    ·    Association (--) = lien structurel    ·    Dépendance (..>) = utilisation
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam classFontSize 12
+skinparam linetype polyline
+skinparam nodesep 40
+skinparam ranksep 40
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+  ArrowColor #0F9F58
+  HeaderBackgroundColor #E2E8F0
+}
+skinparam enum {
+  BackgroundColor #ECFDF3
+  BorderColor #0F9F58
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam legend {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+}
+hide circle
+hide empty methods
+
+abstract class BaseEntity {
+  # id : Long
+  # createdAt : Instant
+  # updatedAt : Instant
+}
+
+package "Utilisateurs" {
+  class User {
+    - email : String {unique}
+    - password : String  <<BCrypt>>
+    - firstName : String
+    - lastName : String
+    - phone : String
+    - city : String
+    - role : Role
+    - enabled : boolean
+    --
+    + sInscrire(request) : AuthResponse
+    + seConnecter(email, password) : AuthResponse
+  }
+}
+
+package "Établissement" {
+  class Business {
+    - name : String
+    - businessType : BusinessType
+    - city : String
+    - address : String
+    - latitude : BigDecimal
+    - longitude : BigDecimal
+    - totalCapacity : int
+    - totalTables : int
+    - status : BusinessStatus
+    - verificationComplete : boolean
+    - rejectionReason : String
+    --
+    + soumettreVerification() : void
+    + estApprouve() : boolean
+  }
+
+  class BusinessSpace {
+    - name : String
+    - spaceType : SpaceType
+    - capacity : int
+    - numberOfTables : int
+    - matchDayPrice : BigDecimal
+  }
+
+  class BusinessTable {
+    - tableNumber : String
+    - capacity : int
+    - active : boolean
+    --
+    + estReservable(matchId) : boolean
+  }
+
+  class VerificationDocument {
+    - documentType : DocumentType
+    - storageKey : String
+    - originalName : String
+    - status : DocumentStatus
+    - uploadedAt : Instant
+  }
+}
+
+package "Matchs" {
+  class Competition {
+    - name : String
+    - slug : String
+    - category : CompetitionCategory
+    - season : String
+    - externalCode : String
+    - active : boolean
+  }
+
+  class FootballMatch {
+    - externalId : String
+    - homeTeam : String
+    - awayTeam : String
+    - matchDate : Instant
+    - venueName : String
+    - homeScore : Integer
+    - awayScore : Integer
+    - status : MatchStatus
+    - lastSyncedAt : Instant
+    --
+    + estReservable() : boolean
+  }
+}
+
+package "Réservation & paiement" {
+  class Reservation {
+    - reservationDateTime : LocalDateTime
+    - partySize : int
+    - status : ReservationStatus
+    - totalPrice : BigDecimal
+    - ticketCode : String
+    - checkedInAt : Instant
+    --
+    + confirmer(ticketCode) : void
+    + annuler() : void
+    + checkIn() : void
+  }
+
+  class Payment {
+    - amount : BigDecimal
+    - platformFee : BigDecimal
+    - ownerPayout : BigDecimal
+    - currency : String  {MAD}
+    - status : PaymentStatus
+    - paymentMethod : String
+    - stripePaymentIntentId : String
+    - paidAt : Instant
+    --
+    + marquerPaye(intentId) : void
+  }
+}
+
+package "Occupation" {
+  class BusinessLiveOccupancy {
+    - currentCustomers : int
+    - availableSeats : Integer
+    - occupancyPercent : BigDecimal
+    - source : String
+    - reportedAt : Instant
+  }
+
+  class OccupancyEngine <<utility>> {
+    {static} ARRIVAL_RATE : double = 0.85
+    {static} PAYMENT_RATE : double = 0.60
+    {static} FRESHNESS : Duration = 15 min
+    {static} GREEN_MAX : double = 50
+    {static} ORANGE_MAX : double = 80
+    --
+    {static} computeBreakdown(...) : Breakdown
+    {static} percentage(effectif, capa) : double
+    {static} level(pct) : OccupancyLevel
+    {static} isFresh(reportedAt) : boolean
+  }
+
+  class PaymentCalculator <<utility>> {
+    {static} COMMISSION : BigDecimal = 0.25
+    --
+    {static} calculate(montant, taux) : Breakdown
+  }
+}
+
+enum Role {
+  FAN_USER
+  BUSINESS_OWNER
+  ADMIN
+}
+
+enum BusinessStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DISABLED
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  CHECKED_IN
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum OccupancyLevel {
+  GREEN
+  ORANGE
+  RED
+}
+
+enum MatchStatus {
+  SCHEDULED
+  LIVE
+  FINISHED
+  CANCELLED
+}
+
+enum DocumentType {
+  NATIONAL_ID
+  BUSINESS_REGISTRATION
+  EXTERIOR_PHOTO
+}
+
+' --- Héritage ---
+BaseEntity <|-- User
+BaseEntity <|-- Business
+BaseEntity <|-- BusinessSpace
+BaseEntity <|-- BusinessTable
+BaseEntity <|-- Competition
+BaseEntity <|-- FootballMatch
+BaseEntity <|-- Reservation
+BaseEntity <|-- Payment
+
+' --- Associations utilisateurs ---
+User "1" --> "0..*" Business : possède >
+User "1" --> "0..*" Reservation : effectue >
+User "0..1" --> "0..*" Business : approuve >
+
+' --- Composition établissement ---
+Business "1" *-- "1..*" BusinessSpace : espaces
+BusinessSpace "1" *-- "1..*" BusinessTable : tables
+Business "1" *-- "0..*" VerificationDocument : pièces KYC
+User "1" --> "0..*" VerificationDocument : dépose >
+
+' --- Matchs ---
+Competition "1" --> "0..*" FootballMatch : programme >
+
+' --- Cœur métier ---
+Reservation "0..*" --> "1" Business : dans
+Reservation "0..*" --> "1" BusinessSpace : espace
+Reservation "0..*" --> "1" BusinessTable : table
+Reservation "0..*" --> "1" FootballMatch : pour
+Reservation "1" *-- "0..1" Payment : règlement
+
+' --- Occupation ---
+Business "1" --> "0..*" BusinessLiveOccupancy : comptage
+FootballMatch "0..1" --> "0..*" BusinessLiveOccupancy
+User "1" --> "0..*" BusinessLiveOccupancy : signale >
+OccupancyEngine ..> BusinessLiveOccupancy : lit
+OccupancyEngine ..> Reservation : agrège
+PaymentCalculator ..> Payment : calcule
+
+note right of OccupancyEngine
+  **Formule effective**
+  Si rapport owner ≤ 15 min :
+    effectif = currentCustomers
+  Sinon :
+    effectif = checkedIn
+             + confirmed × 0,85
+             + pending × 0,60
+  % = effectif / capacité × 100
+end note
+
+note bottom of Reservation
+  Une table est unique par match.
+  Le ticket FC-XXXXXXXX n'existe
+  qu'après Payment = PAID.
+end note
+
+legend right
+  |= Notation |= Signification |
+  | <|-- | Héritage (BaseEntity) |
+  | *--  | Composition (enfant détruit avec le parent) |
+  | -->  | Association navigable + multiplicités |
+  | ..>  | Dépendance (classe utilitaire) |
+  | {unique} | Contrainte d'unicité |
+  | <<utility>> | Méthodes de classe, pas d'instances métier |
+endlegend
+
+@enduml

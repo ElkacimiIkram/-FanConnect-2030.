@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1280" width="1500" height="1280">
+  <defs>
+    <marker id="av" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0F9F58"/>
+    </marker>
+    <marker id="rv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="1500" height="1280" fill="#FFFFFF"/>
+  <rect width="1500" height="58" fill="#111827"/>
+  <text x="750" y="24" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#FFFFFF">Diagramme de séquence — Acceptation d'un propriétaire (KYC)</text>
+  <text x="750" y="46" text-anchor="middle" font-family="Arial" font-size="12" fill="#A7F3D0">CIN + RC + photo  ·  include Consulter dossier  ·  extend Approuver / Rejeter  ·  seul APPROVED est visible aux fans</text>
+
+  <g font-family="Arial" font-size="12" text-anchor="middle">
+    <rect x="20" y="74" width="120" height="44" rx="6" fill="#ECFDF3" stroke="#0F9F58"/>
+    <text x="80" y="100" font-weight="700" fill="#065F46">Owner</text>
+    <rect x="180" y="74" width="140" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="250" y="100" font-weight="700">Front Owner</text>
+    <rect x="370" y="74" width="200" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="470" y="92" font-weight="700">VerificationService</text>
+    <text x="470" y="108" fill="#64748B">BusinessService</text>
+    <rect x="620" y="74" width="150" height="44" rx="4" fill="#F1F5F9" stroke="#1A2332"/>
+    <text x="695" y="100" font-weight="700">PostgreSQL</text>
+    <rect x="820" y="74" width="120" height="44" rx="6" fill="#DBEAFE" stroke="#1D4ED8"/>
+    <text x="880" y="100" font-weight="700" fill="#1D4ED8">Admin</text>
+    <rect x="980" y="74" width="140" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="1050" y="100" font-weight="700">Front Admin</text>
+    <rect x="1160" y="74" width="150" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="1235" y="92" font-weight="700">Géo + Notif</text>
+    <text x="1235" y="108" fill="#64748B">lat/lng · push</text>
+  </g>
+  <g stroke="#CBD5E1" stroke-width="1.1" stroke-dasharray="4 6">
+    <line x1="80" y1="118" x2="80" y2="980"/>
+    <line x1="250" y1="118" x2="250" y2="980"/>
+    <line x1="470" y1="118" x2="470" y2="980"/>
+    <line x1="695" y1="118" x2="695" y2="980"/>
+    <line x1="880" y1="118" x2="880" y2="980"/>
+    <line x1="1050" y1="118" x2="1050" y2="980"/>
+    <line x1="1235" y1="118" x2="1235" y2="980"/>
+  </g>
+
+  <rect x="16" y="130" width="1460" height="22" rx="3" fill="#111827"/>
+  <text x="750" y="146" text-anchor="middle" font-family="Arial" font-size="11" fill="#FFFFFF">1. Création (PENDING, invisible)     2. KYC     3. Soumission     4. Décision admin</text>
+
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="176" fill="#94A3B8" font-size="10">1</text>
+    <line x1="80" y1="172" x2="250" y2="172" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="90" y="166">formulaire café (espaces, tables, capacité)</text>
+    <text x="4" y="204" fill="#94A3B8" font-size="10">2</text>
+    <line x1="250" y1="200" x2="470" y2="200" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="260" y="194">POST /owner/businesses</text>
+    <text x="4" y="232" fill="#94A3B8" font-size="10">3</text>
+    <line x1="470" y1="228" x2="695" y2="228" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="480" y="222">INSERT Business status=PENDING</text>
+    <text x="4" y="260" fill="#94A3B8" font-size="10">4</text>
+    <line x1="695" y1="256" x2="250" y2="256" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#rv)"/>
+    <text x="300" y="250" fill="#64748B">businessId (non visible fans)</text>
+  </g>
+
+  <rect x="200" y="274" width="560" height="130" rx="4" fill="#ECFDF3" fill-opacity="0.4" stroke="#0F9F58" stroke-dasharray="5 3"/>
+  <text x="212" y="292" font-family="Arial" font-size="11" font-weight="700" fill="#0F9F58">loop  3 documents obligatoires  (CIN, RC, photo façade)</text>
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="316" fill="#94A3B8" font-size="10">5</text>
+    <line x1="80" y1="312" x2="250" y2="312" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="90" y="306">upload MultipartFile</text>
+    <text x="4" y="344" fill="#94A3B8" font-size="10">6</text>
+    <line x1="250" y1="340" x2="695" y2="340" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="260" y="334">ancien → REPLACED  ·  INSERT VerificationDocument UPLOADED</text>
+    <text x="4" y="372" fill="#94A3B8" font-size="10">7</text>
+    <text x="260" y="372">verificationComplete = false  (tant que pas soumis)</text>
+  </g>
+
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="430" fill="#94A3B8" font-size="10">8</text>
+    <line x1="80" y1="426" x2="250" y2="426" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="90" y="420">« Soumettre pour validation »</text>
+    <text x="4" y="458" fill="#94A3B8" font-size="10">9</text>
+    <line x1="250" y1="454" x2="470" y2="454" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="260" y="448">POST submitForVerification   <<include>> documents</text>
+  </g>
+  <rect x="240" y="470" width="520" height="70" rx="4" fill="#FFFBEB" fill-opacity="0.5" stroke="#D97706" stroke-dasharray="5 3"/>
+  <text x="252" y="488" font-family="Arial" font-size="11" font-weight="700" fill="#D97706">alt  [pièce manquante]   /   [dossier complet]</text>
+  <text x="252" y="512" font-family="Arial" font-size="12" fill="#DC2626">400 — CIN, RC et photo requis</text>
+  <text x="252" y="530" font-family="Arial" font-size="12" fill="#065F46">PENDING + verificationComplete=true + notif admins</text>
+
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="568" fill="#94A3B8" font-size="10">10</text>
+    <line x1="880" y1="564" x2="1050" y2="564" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="890" y="558">ouvre la demande</text>
+    <text x="4" y="596" fill="#94A3B8" font-size="10">11</text>
+    <line x1="1050" y1="592" x2="470" y2="592" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="700" y="586">GET dossier  <<include>> Consulter</text>
+    <text x="4" y="624" fill="#94A3B8" font-size="10">12</text>
+    <line x1="470" y1="620" x2="695" y2="620" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="480" y="614">business + documents + historique</text>
+  </g>
+
+  <rect x="850" y="640" width="620" height="200" rx="4" fill="#DBEAFE" fill-opacity="0.4" stroke="#1D4ED8" stroke-dasharray="5 3"/>
+  <text x="862" y="658" font-family="Arial" font-size="11" font-weight="700" fill="#1D4ED8">alt  <<extend Approuver>>  [dossier complet]     /     <<extend Rejeter>></text>
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="684" fill="#94A3B8" font-size="10">13</text>
+    <line x1="880" y1="680" x2="1050" y2="680" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="890" y="674">Approuver</text>
+    <text x="4" y="712" fill="#94A3B8" font-size="10">14</text>
+    <line x1="1050" y1="708" x2="470" y2="708" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="600" y="702">POST approve  ·  assertReadyForApproval()</text>
+    <text x="4" y="740" fill="#94A3B8" font-size="10">15</text>
+    <line x1="470" y1="736" x2="1235" y2="736" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#av)"/>
+    <text x="500" y="730">géocoder adresse → lat/lng   ·   APPROVED   ·   notif owner</text>
+    <line x1="860" y1="756" x2="1458" y2="756" stroke="#1D4ED8" stroke-dasharray="4 3"/>
+    <text x="4" y="780" fill="#94A3B8" font-size="10">16</text>
+    <text x="862" y="780" fill="#9A3412">Rejeter + motif  →  REJECTED  ·  verificationComplete=false  ·  owner peut corriger</text>
+    <text x="4" y="808" fill="#94A3B8" font-size="10">17</text>
+    <line x1="1235" y1="804" x2="80" y2="804" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#rv)"/>
+    <text x="300" y="798" fill="#64748B">notification BUSINESS_APPROVED ou REJECTED</text>
+  </g>
+
+  <rect x="30" y="990" width="1440" height="270" rx="8" fill="#F8FAFC" stroke="#1A2332"/>
+  <text x="50" y="1018" font-family="Arial" font-size="14" font-weight="700" fill="#111827">Critères + oral</text>
+  <text x="50" y="1044" font-family="Arial" font-size="13" fill="#0F172A">• loop : les 3 pièces KYC.  • include : Soumettre exécute toujours le contrôle des documents ; Traiter exécute toujours Consulter le dossier.</text>
+  <text x="50" y="1068" font-family="Arial" font-size="13" fill="#0F172A">• extend : Approuver et Rejeter sont deux issues conditionnelles du cas de base « Traiter une demande » (points d'extension acceptation / refus).</text>
+  <text x="50" y="1092" font-family="Arial" font-size="13" fill="#0F172A">• Règle produit : GET public /businesses et POST /fan/bookings ne voient que BusinessStatus.APPROVED.</text>
+  <text x="50" y="1116" font-family="Arial" font-size="13" fill="#0F172A">• Après APPROVED : géocodage (recommandations par distance 5 / 10 / 20 km). Après REJECTED : motif, resoumission possible.</text>
+  <text x="50" y="1144" font-family="Arial" font-size="13" font-weight="700" fill="#065F46">Phrase : « Un owner ne publie pas un café tout seul. C'est un KYC léger : 3 pièces, soumission, décision admin. Sans APPROVED, le café n'existe pas pour le fan. »</text>
+  <text x="50" y="1172" font-family="Arial" font-size="12" fill="#64748B">Fichiers : VerificationServiceImpl.java  ·  BusinessServiceImpl.java (approveBusiness / rejectBusiness)  ·  DocumentStorageServiceImpl.java</text>
+</svg>

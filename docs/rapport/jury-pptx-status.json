@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "stdout": "Wrote C:\\Users\\kassimi\\Downloads\\FanConnect-2030 (1)\\FanConnect-2030\\docs\\rapport\\Presentation_Soutenance_Jury_FanConnect_2030.pptx\nWrote C:\\Users\\kassimi\\Downloads\\FanConnect-2030 (1)\\FanConnect-2030\\docs\\rapport\\Presentation_Soutenance_FanConnect_2030.pptx\nWrote C:\\Users\\kassimi\\Downloads\\FanConnect-2030 (1)\\FanConnect-2030\\Presentation_Soutenance_Jury_FanConnect_2030.pptx\n",
+  "stderr": "",
+  "status": 0,
+  "src": "C:\\Users\\kassimi\\Downloads\\FanConnect-2030 (1)\\FanConnect-2030\\docs\\rapport\\Presentation_Soutenance_Jury_FanConnect_2030.pptx",
+  "dest": "C:\\Users\\kassimi\\Downloads\\FanConnect-2030 (1)\\FanConnect-2030\\Presentation_Soutenance_Jury_FanConnect_2030.pptx",
+  "srcSize": 1121581,
+  "destSize": 1121581,
+  "copied": true,
+  "psShim": "left grok powershell shim untouched",
+  "error": null,
+  "at": "2026-10-25T08:41:10.376Z"
+}

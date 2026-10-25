@@ -1,0 +1,160 @@
+@startuml FanConnect_2030_Cas_Utilisation
+title Diagramme de cas d'utilisation — FanConnect 2030\nUML 2.5  ·  Système : plateforme web de réservation de cafés le jour de match
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer <<include>> flèche vers le cas inclus (toujours)   ·   <<extend>> flèche depuis le cas d'extension (sous condition)
+
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam actorStyle awesome
+skinparam nodesep 50
+skinparam ranksep 50
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+  FontSize 13
+}
+skinparam actor {
+  BackgroundColor #ECFDF3
+  BorderColor #0F9F58
+}
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #1A2332
+}
+skinparam package {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontStyle bold
+}
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam arrow {
+  Color #0F172A
+  FontSize 11
+}
+skinparam legend {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+}
+
+actor "Utilisateur" as User
+actor "Fan\n(supporter)" as Fan
+actor "Propriétaire\nde café" as Owner
+actor "Administrateur" as Admin
+actor "Stripe" as Stripe
+actor "football-data.org" as FootAPI
+actor "Service IA" as AI
+
+User <|-- Fan
+User <|-- Owner
+User <|-- Admin
+
+rectangle "FanConnect 2030" {
+  package "Authentification" as PAuth {
+    usecase "S'inscrire" as UC_Reg
+    usecase "S'authentifier\n(JWT + rôle)" as UC_Auth
+  }
+
+  package "Parcours Fan" as PFan {
+    usecase "Consulter les matchs" as UC_Match
+    usecase "Rechercher un café" as UC_Cafe
+    usecase "Consulter l'occupation" as UC_Occ
+    usecase "Vérifier la disponibilité\nde la table" as UC_Dispo
+    usecase "Réserver une table\n--\n<b>points d'extension</b>\naide FanBot" as UC_Book
+    usecase "Payer en ligne\n--\n<b>points d'extension</b>\nmode simulé" as UC_Pay
+    usecase "Obtenir le ticket QR\n--\n<b>points d'extension</b>\nPDF" as UC_Ticket
+    usecase "Gérer mes réservations\n--\n<b>points d'extension</b>\nannulation" as UC_Mine
+    usecase "Consulter FanBot" as UC_Bot
+    usecase "Télécharger le PDF" as UC_Pdf
+    usecase "Annuler une réservation" as UC_Cancel
+    usecase "Payer en mode simulé" as UC_Simu
+    usecase "Obtenir la prédiction IA" as UC_Pred
+  }
+
+  package "Parcours Propriétaire" as POwn {
+    usecase "Créer un établissement" as UC_CreateBiz
+    usecase "Déposer les documents KYC\n(CIN, RC, photo)" as UC_Docs
+    usecase "Soumettre pour validation" as UC_Submit
+    usecase "Signaler l'occupation live" as UC_Live
+    usecase "Vérifier un ticket QR\n--\n<b>points d'extension</b>\ncheck-in" as UC_Scan
+    usecase "Effectuer le check-in" as UC_Checkin
+  }
+
+  package "Parcours Administrateur" as PAdm {
+    usecase "Consulter le dossier" as UC_Dossier
+    usecase "Traiter une demande\n--\n<b>points d'extension</b>\nacceptation\nrefus" as UC_Review
+    usecase "Approuver un établissement" as UC_Approve
+    usecase "Rejeter un établissement" as UC_Reject
+    usecase "Superviser la plateforme\n--\n<b>points d'extension</b>\ndésactivation" as UC_Admin
+    usecase "Désactiver un établissement" as UC_Disable
+  }
+}
+
+' Associations
+User --> UC_Auth
+Fan --> UC_Reg
+Fan --> UC_Match
+Fan --> UC_Cafe
+Fan --> UC_Book
+Fan --> UC_Mine
+Owner --> UC_Reg
+Owner --> UC_CreateBiz
+Owner --> UC_Docs
+Owner --> UC_Submit
+Owner --> UC_Live
+Owner --> UC_Scan
+Admin --> UC_Review
+Admin --> UC_Admin
+Stripe --> UC_Pay
+FootAPI --> UC_Match
+AI --> UC_Pred
+
+' ===================== INCLUDE (A ..> B  =  A exécute toujours B) =====================
+UC_Book ..> UC_Auth : <<include>>
+UC_Book ..> UC_Match : <<include>>
+UC_Book ..> UC_Cafe : <<include>>
+UC_Book ..> UC_Dispo : <<include>>
+UC_Book ..> UC_Pay : <<include>>
+UC_Pay ..> UC_Ticket : <<include>>
+UC_Cafe ..> UC_Occ : <<include>>
+UC_Submit ..> UC_Docs : <<include>>
+UC_Review ..> UC_Dossier : <<include>>
+
+' ===================== EXTEND (E ..> B  =  E s'ajoute à B si condition) =====================
+UC_Bot ..> UC_Book : <<extend>>\n[aide demandée]
+UC_Cancel ..> UC_Mine : <<extend>>\n[statut ≠ CHECKED_IN]
+UC_Pdf ..> UC_Ticket : <<extend>>\n[téléchargement demandé]
+UC_Simu ..> UC_Pay : <<extend>>\n[Stripe absent]
+UC_Pred ..> UC_Occ : <<extend>>\n[service IA up]
+UC_Checkin ..> UC_Scan : <<extend>>\n[ticket CONFIRMED]
+UC_Approve ..> UC_Review : <<extend>>\n[dossier complet]
+UC_Reject ..> UC_Review : <<extend>>\n[dossier non conforme]
+UC_Disable ..> UC_Admin : <<extend>>\n[sanction / inactivité]
+
+note bottom of UC_Book
+  **Cœur métier**
+  PENDING → (paiement) → CONFIRMED
+  → (QR scanné) → CHECKED_IN
+end note
+
+legend right
+  |= Critère UML 2.5 |= Notation |= Règle |
+  | Acteur primaire | stickman à gauche | Déclenche le cas (Fan, Owner, Admin) |
+  | Acteur secondaire | stickman à droite | Système externe (Stripe, API football, IA) |
+  | Généralisation | triangle blanc | Fan / Owner / Admin **sont** Utilisateur |
+  | Association | trait plein | Qui utilise quel cas |
+  | <<include>> | pointillés, flèche vers l'inclus | **Toujours** exécuté avec le cas de base |
+  | <<extend>> | pointillés, flèche vers le cas de base | **Optionnel**, condition entre crochets |
+  | Point d'extension | zone -- dans le cas de base | Endroit où l'extension se branche |
+endlegend
+
+@enduml

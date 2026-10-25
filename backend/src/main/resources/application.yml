@@ -1,0 +1,144 @@
+# =============================================================================
+# FanConnect 2030 — Base Application Configuration
+# Profile-specific overrides: application-dev.yml | application-docker.yml
+# =============================================================================
+
+spring:
+  application:
+    name: fanconnect-api
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 12MB
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL DataSource (HikariCP connection pool — auto-configured by Spring Boot)
+  # ---------------------------------------------------------------------------
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:fanconnect}
+    username: ${DB_USER:fanconnect}
+    password: ${DB_PASSWORD:fanconnect_secret}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: FanConnectHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+
+  # ---------------------------------------------------------------------------
+  # JPA / Hibernate ORM
+  # ---------------------------------------------------------------------------
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+    open-in-view: false
+
+  # ---------------------------------------------------------------------------
+  # Flyway — versioned SQL migrations (db/migration)
+  # ---------------------------------------------------------------------------
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 1
+
+  # ---------------------------------------------------------------------------
+  # JSON serialization (API responses)
+  # ---------------------------------------------------------------------------
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+
+# -----------------------------------------------------------------------------
+# Embedded server
+# -----------------------------------------------------------------------------
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+# -----------------------------------------------------------------------------
+# Application-specific settings
+# -----------------------------------------------------------------------------
+fanconnect:
+  upload:
+    base-dir: ${UPLOAD_DIR:uploads}
+    max-file-size-bytes: 5242880
+  geocoding:
+    backfill-on-startup: true
+    backfill-limit: 30
+  ai:
+    enabled: ${AI_SERVICE_ENABLED:true}
+    base-url: ${AI_SERVICE_URL:http://localhost:8000}
+    connect-timeout-ms: 3000
+    read-timeout-ms: 5000
+  assistant:
+    enabled: ${FANCONNECT_ASSISTANT_ENABLED:true}
+    xai-api-key: ${XAI_API_KEY:}
+    xai-base-url: ${XAI_BASE_URL:https://api.x.ai/v1}
+    model: ${XAI_MODEL:grok-4.5}
+    timeout-ms: 12000
+  football:
+    api-key: ${FOOTBALL_DATA_API_KEY:}
+    api-base-url: https://api.football-data.org/v4
+    # Demo WC 2030 fixtures around "now" so the Match Center is never empty on a soutenance day.
+    demo-matches: ${FANCONNECT_DEMO_MATCHES:true}
+    sync-on-startup: true
+    sync-enabled: true
+    sync-interval-ms: 300000
+    live-sync-interval-ms: 60000
+    feed-response-cache-seconds: 20
+    sync-delay-ms: 7000
+    date-from-days: 3
+    date-to-days: 90
+    feed-cache-seconds: 30
+    live-cache-seconds: 10
+    today-cache-seconds: 15
+    dynamic-window-days: 14
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:Y2hhbmdlLXRoaXMtc2VjcmV0LWluLXByb2R1Y3Rpb24tbWluLTI1Ni1iaXRz}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,http://localhost,http://localhost:80}
+
+# -----------------------------------------------------------------------------
+# OpenAPI / Swagger
+# -----------------------------------------------------------------------------
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+# -----------------------------------------------------------------------------
+# Logging
+# -----------------------------------------------------------------------------
+logging:
+  level:
+    root: INFO
+    com.fanconnect: DEBUG
+    org.springframework.security: INFO
+    com.zaxxer.hikari: INFO

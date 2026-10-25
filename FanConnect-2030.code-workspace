@@ -1,0 +1,23 @@
+{
+  "folders": [
+    { "name": "Root", "path": "." },
+    { "name": "Backend", "path": "backend" },
+    { "name": "Frontend", "path": "frontend" },
+    { "name": "Database", "path": "database" },
+    { "name": "Docker", "path": "docker" },
+    { "name": "Docs", "path": "docs" }
+  ],
+  "settings": {
+    "java.project.sourcePaths": ["backend/src/main/java"],
+    "eslint.workingDirectories": ["frontend"]
+  },
+  "extensions": {
+    "recommendations": [
+      "vscjava.vscode-java-pack",
+      "vmware.vscode-spring-boot",
+      "dbaeumer.vscode-eslint",
+      "bradlc.vscode-tailwindcss",
+      "ms-azuretools.vscode-docker"
+    ]
+  }
+}

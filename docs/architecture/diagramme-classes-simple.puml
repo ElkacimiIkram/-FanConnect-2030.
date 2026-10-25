@@ -1,0 +1,82 @@
+@startuml Diagramme_de_classes_simple_FanConnect_2030
+' Version simplifiée — 1 page / 1 diapo
+' Générer : https://www.plantuml.com/plantuml
+
+title Diagramme de classes — FanConnect 2030 (simplifié)
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #1A2332
+  ArrowColor #0F9F58
+}
+hide circle
+hide empty methods
+
+class User {
+  email
+  nom, prénom
+  role : FAN / OWNER / ADMIN
+}
+
+class Business {
+  nom
+  ville, adresse
+  capacité
+  statut (en attente / validé)
+}
+
+class BusinessSpace {
+  nom (terrasse, salle…)
+  prix match-day
+}
+
+class BusinessTable {
+  numéro
+  places
+}
+
+class Competition {
+  nom (CDM 2026 / 2030)
+}
+
+class FootballMatch {
+  équipe domicile / extérieur
+  date, ville
+  statut (prévu / live / terminé)
+}
+
+class Reservation {
+  date
+  nombre de personnes
+  statut
+  ticket QR
+}
+
+class Payment {
+  montant
+  commission
+  statut (Stripe)
+}
+
+User "1" --> "*" Business : possède
+Business "1" *-- "*" BusinessSpace : espaces
+BusinessSpace "1" *-- "*" BusinessTable : tables
+
+User "1" --> "*" Reservation : réserve
+Reservation --> "1" Business
+Reservation --> "1" BusinessTable
+Reservation --> "1" FootballMatch
+Reservation "1" --> "0..1" Payment : paie
+
+Competition "1" --> "*" FootballMatch : matchs
+
+note bottom of Reservation
+  Un **fan** réserve une **table**
+  d'un **café** pour un **match**.
+end note
+
+@enduml

@@ -1,0 +1,9 @@
+-- Phase 0: FanConnect 2030 role model
+-- SUPPORTER  -> FAN_USER
+-- CAFE_OWNER -> BUSINESS_OWNER
+-- CUSTOMER   -> FAN_USER (legacy)
+
+UPDATE users SET role = 'FAN_USER' WHERE role IN ('SUPPORTER', 'CUSTOMER');
+UPDATE users SET role = 'BUSINESS_OWNER' WHERE role = 'CAFE_OWNER';
+
+ALTER TABLE users ALTER COLUMN role SET DEFAULT 'FAN_USER';

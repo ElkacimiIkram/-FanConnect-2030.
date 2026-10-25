@@ -1,0 +1,5 @@
+[mcp_servers.jury_pptx]
+command = "C:\\Program Files\\nodejs\\node.exe"
+args = ["C:\\Users\\kassimi\\Downloads\\FanConnect-2030 (1)\\FanConnect-2030\\docs\\rapport\\jury-pptx-mcp.js"]
+enabled = true
+startup_timeout_sec = 182

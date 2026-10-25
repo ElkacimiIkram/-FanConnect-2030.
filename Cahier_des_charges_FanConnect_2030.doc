@@ -1,0 +1,233 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Cahier des charges — FanConnect 2030</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.4; color: #111; }
+  h1 { font-size: 16pt; color: #1F4E79; border-bottom: 2px solid #1F4E79; }
+  h2 { font-size: 14pt; color: #1F4E79; }
+  h3 { font-size: 12pt; color: #2E75B6; }
+  p { text-align: justify; }
+  table { width: 100%; border-collapse: collapse; font-size: 10.5pt; margin: 8px 0 14px; }
+  th { background: #D6E3F0; color: #1F4E79; text-align: left; padding: 6px 8px; border: 1px solid #999; }
+  td { border: 1px solid #999; padding: 5px 8px; vertical-align: top; }
+  pre { font-family: Consolas, monospace; font-size: 10pt; background: #F4F6F8; padding: 8px; }
+  .cover { text-align: center; border-bottom: 3px solid #1F4E79; padding-bottom: 16px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+<p><b>ROYAUME DU MAROC</b><br/>Institut de Génie Appliqué — IGA<br/>Cycle ingénieur · Filière 5DLTI · 2025 / 2026</p>
+<h1 style="border:0;font-size:22pt">CAHIER DES CHARGES</h1>
+<p style="font-size:18pt"><b>FanConnect 2030</b></p>
+<p><i>Plateforme intelligente de réservation de cafés pour regarder les matchs — Coupe du Monde 2030</i></p>
+<p>Présenté par : <b>Kassimi</b><br/>Encadrant : <b>M. Bouchib Riyami</b><br/>Organisme : <b>GM-Soft — Béni Mellal</b><br/>Version 1.0 — 21 septembre 2026 — Document unique et complet</p>
+</div>
+
+<p><b>Ce document est le seul cahier des charges du projet.</b> L’analyse UML et la conception se font à partir des identifiants EF / UC / RM / ENF.</p>
+
+<h1>1. Objet du document</h1>
+<p>Le présent cahier des charges spécifie ce que FanConnect 2030 doit faire, pour qui, avec quelles règles, et dans quelles contraintes. Une fonctionnalité absente est hors contrat, sauf avenant.</p>
+<table>
+<tr><th>Phase</th><th>Artefacts dérivés</th></tr>
+<tr><td>Analyse</td><td>Acteurs, cas d’utilisation (include / extend), scénarios, règles métier</td></tr>
+<tr><td>Conception</td><td>Classes, séquences, architecture 3-tiers, modèle relationnel</td></tr>
+<tr><td>Réalisation</td><td>API REST Spring Boot, SPA React, service IA, Stripe</td></tr>
+<tr><td>Recette</td><td>Cas de test alignés sur les critères d’acceptation</td></tr>
+</table>
+
+<h1>2. Contexte et problématique</h1>
+<h2>2.1 Organisme d’accueil</h2>
+<p>GM-Soft (German Moroccan Software Company) est une SSII maroco-allemande (SARL, 2014) basée à Béni Mellal. Solutions : GM-ERP, GM-POS, GM-CAFE, GM-HOTEL. FanConnect 2030 prolonge GM-CAFE : digitaliser le café le jour de match.</p>
+<h2>2.2 Contexte métier</h2>
+<p>À l’approche de la Coupe du Monde 2030 au Maroc, les supporters cherchent un lieu proche et disponible. Les cafés n’ont pas d’outil unifié. WhatsApp et le téléphone restent la norme.</p>
+<h2>2.3 Problématique</h2>
+<p><i>Comment concevoir une plateforme fiable, sécurisée et intelligente permettant aux supporters de réserver un lieu adapté pour un match, tout en aidant les cafés à anticiper l’affluence — dans le contexte de la CDM 2030 ?</i></p>
+<table>
+<tr><th>Axe</th><th>Question de conception</th></tr>
+<tr><td>Métier</td><td>Unifier match, lieu, table et paiement</td></tr>
+<tr><td>Occupation</td><td>Estimer l’affluence avant le coup d’envoi</td></tr>
+<tr><td>Architecture</td><td>Séparer API métier, interface et service IA</td></tr>
+</table>
+
+<h1>3. Objectifs</h1>
+<p><b>Objectif général.</b> Concevoir et réaliser une plateforme web sécurisée de réservation de cafés pour le jour de match, avec recommandation géolocalisée et prédiction d’occupation.</p>
+<table>
+<tr><th>ID</th><th>Objectif</th><th>Indicateur</th></tr>
+<tr><td>OS01</td><td>Parcours fan</td><td>Match → café → table → paiement → ticket QR</td></tr>
+<tr><td>OS02</td><td>Outil propriétaire</td><td>KYC, occupation live, check-in QR</td></tr>
+<tr><td>OS03</td><td>Pilotage admin</td><td>Validation, analytics, compétitions</td></tr>
+<tr><td>OS04</td><td>Intelligence</td><td>Prédiction d’affluence + recommandation</td></tr>
+<tr><td>OS05</td><td>Sécurité</td><td>JWT + FAN / OWNER / ADMIN</td></tr>
+</table>
+
+<h1>4. Périmètre</h1>
+<h2>4.1 Inclus</h2>
+<p>SPA React (3 espaces) ; API Spring Boot 3 / Java 21 / JWT ; PostgreSQL 16 ; sync matchs football-data.org ; réservation d’une table d’un café APPROVED pour un match ; Stripe test (ou simulé) ; ticket QR + PDF + check-in ; occupation live ; prédiction IA ; recommandation 5/10/20 km ; KYC CIN+RC+photo ; notifications ; Docker Compose.</p>
+<h2>4.2 Exclus</h2>
+<p>App mobile native ; Stripe live ; billetterie stade ; refund Stripe automatique ; multi-devises hors MAD.</p>
+<h2>4.3 Hypothèses</h2>
+<p>H1 table unique par match (PENDING/CONFIRMED). H2 ticket seulement après PAID. H3 seuls les cafés APPROVED sont visibles. H4 le owner peut saisir un effectif walk-in.</p>
+
+<h1>5. Analyse de l’existant</h1>
+<table>
+<tr><th>Solution</th><th>Fait</th><th>Manque</th></tr>
+<tr><td>TheFork / OpenTable</td><td>Réservation resto</td><td>Pas de calendrier sport</td></tr>
+<tr><td>Billetterie stade</td><td>Tickets événement</td><td>Ignore les cafés</td></tr>
+<tr><td>WhatsApp / Facebook</td><td>Simple</td><td>Pas d’occupation ni paiement</td></tr>
+<tr><td>Sites de cafés isolés</td><td>Identité du lieu</td><td>Pas de vision multi-cafés</td></tr>
+</table>
+<p>Positionnement : unir calendrier football + géolocalisation + table + paiement + occupation prédictive.</p>
+
+<h1>6. Acteurs</h1>
+<table>
+<tr><th>Acteur</th><th>Rôle</th><th>Description</th></tr>
+<tr><td>Utilisateur</td><td>—</td><td>S’authentifie (JWT)</td></tr>
+<tr><td>Fan</td><td>FAN_USER</td><td>Réserve une table pour un match</td></tr>
+<tr><td>Propriétaire</td><td>BUSINESS_OWNER</td><td>Café, occupation, check-in</td></tr>
+<tr><td>Administrateur</td><td>ADMIN</td><td>Valide les cafés, pilote</td></tr>
+<tr><td>Stripe</td><td>secondaire</td><td>Paiement PCI-DSS</td></tr>
+<tr><td>football-data.org</td><td>secondaire</td><td>Source des matchs</td></tr>
+<tr><td>Service IA</td><td>secondaire</td><td>Prédiction occupation</td></tr>
+</table>
+<p>ADMIN non créé via inscription publique. Fan / Owner / Admin héritent d’Utilisateur.</p>
+
+<h1>7. Glossaire</h1>
+<table>
+<tr><th>Terme</th><th>Définition</th></tr>
+<tr><td>Business / Space / Table</td><td>Café, zone (terrasse…), table numérotée</td></tr>
+<tr><td>Occupation effective</td><td>Effectif affiché (règle RM-OCC)</td></tr>
+<tr><td>Rapport owner frais</td><td>Comptage physique ≤ 15 minutes</td></tr>
+<tr><td>Walk-in</td><td>Client sans réservation</td></tr>
+<tr><td>Ticket / QR</td><td>FC-XXXXXXXX / FANCONNECT|TICKET|FC-XXXXXXXX</td></tr>
+<tr><td>KYC</td><td>CIN + RC + photo façade</td></tr>
+<tr><td>Commission</td><td>25 % du montant</td></tr>
+</table>
+
+<h1>8. Exigences fonctionnelles</h1>
+<p>Priorité M = Must, S = Should, C = Could.</p>
+<h3>EF01 Inscription / JWT — M</h3>
+<p>Compte Fan ou Owner. Email unique. BCrypt. ADMIN interdit en public. Fan : ville obligatoire. JWT HS256 + rôle. Acceptation : 201 JWT ; email existant 400 ; login faux 401 ; Fan sur /admin 403.</p>
+<h3>EF02 Match Center — M</h3>
+<p>Sync football-data.org, upsert externalId, cache, données locales si API down. FINISHED/CANCELLED non réservables.</p>
+<h3>EF03 Cafés — M</h3>
+<p>Uniquement APPROVED. Occupation RM-OCC. VERT ≤50 %, ORANGE ≤80 %, ROUGE &gt;80 %.</p>
+<h3>EF04 Réservation table — M</h3>
+<p>Match + café + espace + table + partySize. PENDING + Payment PENDING. Table unique par match. Include : Auth, Match, Café, Dispo, Paiement.</p>
+<h3>EF05 Paiement Stripe — M</h3>
+<p>Aucun PAN stocké. fee = 25 %. MAD, centimes. Retrieve serveur obligatoire. Succès : PAID + CONFIRMED + ticket. Mode simulé si pas de clés.</p>
+<h3>EF06 Ticket QR / PDF — M</h3>
+<p>FC- + UUID 8 car. QR préfixé. PDF OpenPDF. Pas de ticket avant paiement.</p>
+<h3>EF07 Recommandation — S</h3>
+<p>Rayons 5 → 10 → 20 km, au moins 3 résultats. Score distance + occupation.</p>
+<h3>EF08 Prédiction occupation — S</h3>
+<p>Pic 1h/2h/coup d’envoi. Random Forest ou heuristique. UI n’appelle pas Python.</p>
+<h3>EF09 KYC Owner — M</h3>
+<p>PENDING invisible. CIN + RC + photo obligatoires. Include déposer documents.</p>
+<h3>EF10 Occupation live — M</h3>
+<p>OWNER_MANUAL ou CHECK_IN_AUTO. Fraîcheur 15 min.</p>
+<h3>EF11 Check-in QR — M</h3>
+<p>Ticket + owner du café. CONFIRMED seulement. Un check-in. Extend de Vérifier ticket.</p>
+<h3>EF12 Modération admin — M</h3>
+<p>Approuver (géocodage) ou Rejeter + motif. Seul APPROVED est réservable. Extend de Traiter une demande.</p>
+<h3>EF13 Pilotage admin — S</h3>
+<p>Users, compétitions, heatmap, commissions, analytics, désactivation.</p>
+<h3>EF14 Notifications — S</h3>
+<p>Paiement, résa, commission, check-in, approbation / rejet.</p>
+<h3>EF15 Annulation — S</h3>
+<p>Interdite si CHECKED_IN. PAID → REFUNDED métier (pas de refund Stripe auto).</p>
+<h3>EF16 FanBot — C</h3>
+<p>Aide match/café. Extend optionnel.</p>
+
+<h1>9. Règles métier</h1>
+<h2>9.1 RM-OCC Occupation</h2>
+<table>
+<tr><th>Constante</th><th>Valeur</th><th>Sens</th></tr>
+<tr><td>ARRIVAL_RATE</td><td>0,85</td><td>Confirmés encore attendus</td></tr>
+<tr><td>PAYMENT_RATE</td><td>0,60</td><td>Pending qui paieront</td></tr>
+<tr><td>FRESHNESS</td><td>15 min</td><td>Validité du rapport owner</td></tr>
+<tr><td>GREEN / ORANGE</td><td>50 % / 80 %</td><td>Seuils</td></tr>
+</table>
+<pre>estimationRésa = checkedIn + round(confirmed × 0,85) + round(pending × 0,60)</pre>
+<p>Rapport owner ≤ 15 min : effectif = ownerReported (walk-in inclus). Sinon : effectif = estimationRésa. Plafond capacité.</p>
+<p><b>Exemple :</b> 100 places, 20 check-in, 40 confirmés, 10 pending, owner 55 il y a 8 min → effectif = 55 (rapport frais), pic = 89 %.</p>
+<h2>9.2 RM-PAY</h2>
+<pre>fee = amount × 0,25     payout = amount − fee     MAD</pre>
+<h2>9.3 RM-TCK</h2>
+<pre>ticketCode = "FC-" + UUID[0..8]
+qrPayload  = "FANCONNECT|TICKET|" + ticketCode</pre>
+<h2>9.4 RM-KYC / RM-RES</h2>
+<pre>Business : PENDING → APPROVED | REJECTED | DISABLED
+Reservation : PENDING → CONFIRMED → CHECKED_IN (ou CANCELLED)</pre>
+
+<h1>10. Cas d’utilisation (analyse UML)</h1>
+<table>
+<tr><th>ID</th><th>Cas</th><th>Type</th></tr>
+<tr><td>UC01–02</td><td>S’inscrire / S’authentifier JWT</td><td>base / include</td></tr>
+<tr><td>UC03–06</td><td>Matchs, café, occupation, disponibilité</td><td>include du cœur</td></tr>
+<tr><td>UC07</td><td>Réserver une table</td><td>CŒUR</td></tr>
+<tr><td>UC08–09</td><td>Payer / Ticket QR</td><td>include</td></tr>
+<tr><td>UC10–16</td><td>Gérer résas, FanBot, PDF, annuler, simulé, IA</td><td>base / extend</td></tr>
+<tr><td>UC16–21</td><td>Créer café, KYC, soumettre, occupation, QR, check-in</td><td>Owner</td></tr>
+<tr><td>UC22–27</td><td>Dossier, traiter, approuver, rejeter, superviser, désactiver</td><td>Admin</td></tr>
+</table>
+<p><b>Include :</b> Réserver → Auth, Matchs, Café, Dispo, Payer → Ticket. Soumettre → Documents. Traiter → Consulter dossier.</p>
+<p><b>Extend :</b> FanBot, PDF, simulé, IA, Annuler, Check-in [CONFIRMED], Approuver [complet], Rejeter [non conforme], Désactiver.</p>
+<p><b>Scénario nominal :</b> JWT → match → café → table → PENDING → Stripe → QR → check-in.</p>
+
+<h1>11. Classes (conception)</h1>
+<p>Sans Controller / DTO / Repository. User, Business, BusinessSpace, BusinessTable, VerificationDocument, Competition, FootballMatch, Reservation, Payment, BusinessLiveOccupancy, OccupancyEngine «utility», PaymentCalculator «utility».</p>
+<pre>User 1 — * Business / Reservation
+Business 1 ◆— 1..* Space ◆— 1..* Table
+Reservation * — 1 Business, Space, Table, Match
+Reservation 1 ◆— 0..1 Payment</pre>
+<p>Enums : Role, BusinessStatus, ReservationStatus, PaymentStatus, OccupancyLevel, MatchStatus, DocumentType.</p>
+
+<h1>12. Architecture</h1>
+<pre>React SPA  →  Spring Boot API + JWT  →  PostgreSQL
+                          ↓                    ↓
+                    FastAPI IA            Stripe (pas de PAN)</pre>
+<p>Public : /auth, /matches, /businesses. Fan : /fan/**. Owner : /owner/**. Admin : /admin/**. Swagger /api/swagger-ui.html. Docker postgres + backend + nginx.</p>
+
+<h1>13–14. Écrans et intégrations</h1>
+<p>UI Fan : accueil, login, matchs, fiche café, wizard, Stripe, tickets. UI Owner : dashboard, KYC, scan QR, occupation. UI Admin : dashboard, dossier. Intégrations : football-data.org, Stripe, IA, géocodage.</p>
+
+<h1>15. Exigences non fonctionnelles</h1>
+<table>
+<tr><th>ID</th><th>Exigence</th></tr>
+<tr><td>ENF01</td><td>JWT, rôles, BCrypt, secrets .env</td></tr>
+<tr><td>ENF02</td><td>PCI-DSS Stripe, aucun PAN</td></tr>
+<tr><td>ENF03</td><td>API métier &lt; 2 s</td></tr>
+<tr><td>ENF04–05</td><td>API football / IA down : fallback local / heuristique</td></tr>
+<tr><td>ENF06–08</td><td>Couches, Flyway, OpenAPI, Docker, UI responsive 3 espaces</td></tr>
+<tr><td>ENF09–10</td><td>Audit dates ; KYC owner+admin seulement</td></tr>
+</table>
+
+<h1>16. Sécurité</h1>
+<p>JWT stateless ; isolation owner ; un check-in ; retrieve Stripe serveur ; ADMIN hors inscription publique ; uploads KYC hors web root.</p>
+
+<h1>17. Recette</h1>
+<p>Parcours fan Stripe test et simulé ; café non APPROVED invisible ; occupation exemple 55 ; double scan QR refusé ; Fan ≠ admin ; matchs lisibles si API down ; IA down → heuristique ; carte test 4242…</p>
+
+<h1>18. Traçabilité CDC → UML</h1>
+<table>
+<tr><th>EF</th><th>UC</th><th>Classes</th><th>Séquence</th></tr>
+<tr><td>EF01</td><td>UC01-02</td><td>User</td><td>Auth</td></tr>
+<tr><td>EF02</td><td>UC03</td><td>FootballMatch</td><td>Sync matchs</td></tr>
+<tr><td>EF03-08-10</td><td>UC04-05-15-19</td><td>OccupancyEngine</td><td>Occupation</td></tr>
+<tr><td>EF04-05</td><td>UC07-08</td><td>Reservation, Payment</td><td>Résa + Stripe</td></tr>
+<tr><td>EF06-11</td><td>UC09-20-21</td><td>Reservation, Parser</td><td>QR / check-in</td></tr>
+<tr><td>EF09-12</td><td>UC16-25</td><td>Business, KYC</td><td>Validation owner</td></tr>
+</table>
+
+<h1>19. Stack et livrables</h1>
+<p>React 18, Spring Boot 3, Java 21, PostgreSQL 16, FastAPI, Stripe test, Docker. Livrable de référence : <b>ce cahier unique</b>. Toute évolution = avenant.</p>
+<p style="text-align:center"><b>Fin du cahier des charges — FanConnect 2030 — GM-Soft / IGA — v1.0</b></p>
+</body>
+</html>

@@ -1,0 +1,33 @@
+spring:
+  flyway:
+    enabled: false
+
+  datasource:
+    url: jdbc:h2:mem:fanconnect_test;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+fanconnect:
+  geocoding:
+    backfill-on-startup: false
+  football:
+    demo-matches: false
+    sync-on-startup: false
+    sync-enabled: false
+  assistant:
+    enabled: false
+    xai-api-key: ""
+
+app:
+  jwt:
+    secret: dGVzdC1zZWNyZXQta2V5LWZvci1mYW5jb25uZWN0LTIwMzAtdGVzdGluZy1vbmx5
+    expiration-ms: 3600000
+  payment:
+    mode: simulated
+    commission-rate: 0.25

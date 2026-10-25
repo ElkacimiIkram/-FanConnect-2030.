@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 980" width="1400" height="980">
+  <defs>
+    <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0F9F58"/>
+    </marker>
+    <marker id="rm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="980" fill="#FFFFFF"/>
+  <rect width="1400" height="58" fill="#111827"/>
+  <text x="700" y="24" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#FFFFFF">Diagramme de séquence — API des matchs (football-data.org)</text>
+  <text x="700" y="46" text-anchor="middle" font-family="Arial" font-size="12" fill="#A7F3D0">Upsert par externalId  ·  cache live 10 s / jour 15 s  ·  fenêtre J→J+7  ·  le fan lit PostgreSQL, pas l'API à chaque clic</text>
+
+  <g font-family="Arial" font-size="12" text-anchor="middle">
+    <rect x="30" y="74" width="90" height="44" rx="6" fill="#ECFDF3" stroke="#0F9F58"/>
+    <text x="75" y="100" font-weight="700" fill="#065F46">Fan</text>
+    <rect x="170" y="74" width="140" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="240" y="100" font-weight="700">Match Center</text>
+    <rect x="360" y="74" width="160" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="440" y="92" font-weight="700">MatchController</text>
+    <text x="440" y="108" fill="#64748B">GET /matches</text>
+    <rect x="570" y="74" width="180" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="660" y="92" font-weight="700">SyncScheduler</text>
+    <text x="660" y="108" fill="#64748B">60 s / 5 min</text>
+    <rect x="800" y="74" width="180" height="44" rx="4" fill="#F8FAFC" stroke="#1A2332"/>
+    <text x="890" y="92" font-weight="700">FootballDataClient</text>
+    <text x="890" y="108" fill="#64748B">cache + HTTP</text>
+    <rect x="1030" y="74" width="160" height="44" rx="4" fill="#DBEAFE" stroke="#1D4ED8"/>
+    <text x="1110" y="92" font-weight="700" fill="#1D4ED8">football-data.org</text>
+    <text x="1110" y="108" fill="#1D4ED8">API v4</text>
+    <rect x="1230" y="74" width="140" height="44" rx="4" fill="#F1F5F9" stroke="#1A2332"/>
+    <text x="1300" y="100" font-weight="700">PostgreSQL</text>
+  </g>
+  <g stroke="#CBD5E1" stroke-width="1.1" stroke-dasharray="4 6">
+    <line x1="75" y1="118" x2="75" y2="680"/>
+    <line x1="240" y1="118" x2="240" y2="680"/>
+    <line x1="440" y1="118" x2="440" y2="680"/>
+    <line x1="660" y1="118" x2="660" y2="680"/>
+    <line x1="890" y1="118" x2="890" y2="680"/>
+    <line x1="1110" y1="118" x2="1110" y2="680"/>
+    <line x1="1300" y1="118" x2="1300" y2="680"/>
+  </g>
+
+  <rect x="16" y="130" width="1368" height="22" rx="3" fill="#111827"/>
+  <text x="700" y="146" text-anchor="middle" font-family="Arial" font-size="11" fill="#FFFFFF">Boucle backend (indépendante de l'UI)</text>
+
+  <rect x="540" y="164" width="820" height="200" rx="4" fill="#DBEAFE" fill-opacity="0.35" stroke="#1D4ED8" stroke-dasharray="5 3"/>
+  <text x="552" y="182" font-family="Arial" font-size="11" font-weight="700" fill="#1D4ED8">loop  toutes les 60 s   refreshDynamicWindow(7 jours) + LIVE</text>
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="210" fill="#94A3B8" font-size="10">1</text>
+    <line x1="660" y1="206" x2="890" y2="206" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="670" y="200">si FOOTBALL_DATA_API_KEY absente → skip</text>
+    <text x="4" y="238" fill="#94A3B8" font-size="10">2</text>
+    <line x1="890" y1="234" x2="1110" y2="234" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="900" y="228">GET /matches?dateFrom&amp;dateTo   (cache 15 s / 30 s)</text>
+    <text x="4" y="266" fill="#94A3B8" font-size="10">3</text>
+    <line x1="890" y1="262" x2="1110" y2="262" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="900" y="256">GET /matches?status=LIVE,IN_PLAY,PAUSED</text>
+    <text x="4" y="294" fill="#94A3B8" font-size="10">4</text>
+    <line x1="1110" y1="290" x2="890" y2="290" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#rm)"/>
+    <text x="920" y="284" fill="#64748B">JSON matchs</text>
+    <text x="4" y="322" fill="#94A3B8" font-size="10">5</text>
+    <line x1="660" y1="318" x2="1300" y2="318" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="680" y="312">upsert par externalId (équipes, score, minute, statut)</text>
+    <text x="4" y="350" fill="#94A3B8" font-size="10">6</text>
+    <text x="552" y="350">toutes les 5 min : sync compétitions actives (WC, CL…)  ·  filtre WorldCupCompetitionScope</text>
+  </g>
+
+  <rect x="16" y="380" width="1368" height="22" rx="3" fill="#111827"/>
+  <text x="700" y="396" text-anchor="middle" font-family="Arial" font-size="11" fill="#FFFFFF">Consultation Fan — lecture de NOTRE base</text>
+
+  <g font-family="Arial" font-size="12">
+    <text x="4" y="430" fill="#94A3B8" font-size="10">7</text>
+    <line x1="75" y1="426" x2="240" y2="426" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="85" y="420">ouvre le Match Center</text>
+    <text x="4" y="458" fill="#94A3B8" font-size="10">8</text>
+    <line x1="240" y1="454" x2="440" y2="454" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="250" y="448">GET /matches</text>
+    <text x="4" y="486" fill="#94A3B8" font-size="10">9</text>
+    <line x1="440" y1="482" x2="1300" y2="482" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="500" y="476">SELECT matchs à venir (PostgreSQL)</text>
+    <text x="4" y="514" fill="#94A3B8" font-size="10">10</text>
+    <line x1="1300" y1="510" x2="240" y2="510" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#rm)"/>
+    <text x="500" y="504" fill="#64748B">home, away, date, statut</text>
+    <text x="4" y="546" fill="#94A3B8" font-size="10">11</text>
+    <line x1="240" y1="542" x2="440" y2="542" stroke="#0F9F58" stroke-width="1.5" marker-end="url(#am)"/>
+    <text x="250" y="536">GET /matches/live/{externalId}  (détail live : buts, compos)</text>
+  </g>
+
+  <rect x="200" y="564" width="1160" height="70" rx="4" fill="#FFFBEB" fill-opacity="0.5" stroke="#D97706" stroke-dasharray="5 3"/>
+  <text x="212" y="586" font-family="Arial" font-size="11" font-weight="700" fill="#D97706">opt  API externe down</text>
+  <text x="212" y="610" font-family="Arial" font-size="13" fill="#0F172A">Le Match Center continue d'afficher les dernières données synchronisées en PostgreSQL (résilience).</text>
+
+  <rect x="20" y="700" width="1360" height="260" rx="8" fill="#F8FAFC" stroke="#1A2332"/>
+  <text x="40" y="728" font-family="Arial" font-size="14" font-weight="700" fill="#111827">Conception — 4 choix à défendre</text>
+  <text x="40" y="756" font-family="Arial" font-size="13" fill="#0F172A">1. Acteur secondaire football-data.org : source des faits sportifs, pas saisis à la main.</text>
+  <text x="40" y="780" font-family="Arial" font-size="13" fill="#0F172A">2. Upsert par externalId : une seule vérité locale (INSERT ou UPDATE), lastSyncedAt = now.</text>
+  <text x="40" y="804" font-family="Arial" font-size="13" fill="#0F172A">3. Cache (10 / 15 / 30 s) : quota API. Scheduler 60 s live + 5 min compétitions.</text>
+  <text x="40" y="828" font-family="Arial" font-size="13" fill="#0F172A">4. Le fan lit PostgreSQL : l'UI ne dépend pas du live de l'API à chaque clic. Si l'API est down, le calendrier reste affiché.</text>
+  <text x="40" y="856" font-family="Arial" font-size="13" font-weight="700" fill="#065F46">Phrase : « On synchronise football-data.org, on stocke, le Match Center lit notre base. »</text>
+  <text x="40" y="884" font-family="Arial" font-size="12" fill="#64748B">Fichiers : FootballDataClient.java  ·  MatchDataSyncServiceImpl.java  ·  MatchDataSyncScheduler.java  ·  MatchController.java</text>
+  <text x="40" y="908" font-family="Arial" font-size="13" fill="#0F172A">UML : loop (période)  ·  opt (panne API)  ·  acteur secondaire à droite  ·  deux temps (sync vs lecture).</text>
+</svg>

@@ -1,0 +1,120 @@
+@startuml FanConnect_2030_Sequence_Validation
+title Diagramme de séquence — Acceptation d'un propriétaire\nKYC (CIN, RC, photo) + décision admin  ·  UML 2.5
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer Un café n'est visible / réservable par les fans que si status = APPROVED
+
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam maxMessageSize 250
+skinparam ParticipantPadding 10
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+}
+
+actor "Propriétaire" as Owner
+participant "Frontend Owner" as UI
+participant "VerificationService\n+ BusinessService" as API
+database "PostgreSQL\n+ fichiers uploads" as DB
+actor "Administrateur" as Admin
+participant "Frontend Admin" as ADM
+participant "GeocodingService" as GEO
+participant "NotificationService" as NOTIF
+
+== Création de l'établissement (PENDING) ==
+Owner -> UI : formulaire café (espaces, tables, capacité)
+UI -> API : POST /owner/businesses
+activate API
+API -> API : rôle = BUSINESS_OWNER (JWT)
+API -> DB : INSERT Business status=PENDING
+DB --> API : businessId
+API --> UI : établissement créé (non visible fans)
+deactivate API
+
+== Dépôt KYC  <<include>>  CIN + RC + photo extérieure ==
+loop pour chaque type requis
+  Owner -> UI : upload document
+  UI -> API : POST documents (MultipartFile)
+  activate API
+  API -> DB : ancien doc → status REPLACED
+  API -> DB : stocker fichier + INSERT VerificationDocument UPLOADED
+  API -> DB : verificationComplete = false
+  API --> UI : document enregistré
+  deactivate API
+end
+
+== Soumission du dossier ==
+Owner -> UI : « Soumettre pour validation »
+UI -> API : POST submitForVerification
+activate API
+API -> API : isDocumentSetComplete() ?\nNATIONAL_ID + BUSINESS_REGISTRATION + EXTERIOR_PHOTO
+
+alt documents manquants
+  API --> UI : 400 — CIN, RC et photo requis
+else dossier complet
+  API -> DB : status=PENDING, verificationComplete=true\nINSERT BusinessApproval PENDING
+  API -> NOTIF : notifier les admins (BUSINESS_PENDING)
+  API --> UI : dossier en attente
+end
+deactivate API
+
+== Traitement admin  <<include consulter dossier>> ==
+Admin -> ADM : ouvre la demande
+ADM -> API : GET admin/verifications/{id}
+API -> DB : business + documents + historique
+API --> ADM : dossier complet
+
+alt **extend acceptation** — dossier conforme
+  Admin -> ADM : Approuver
+  ADM -> API : POST approve
+  activate API
+  API -> API : assertReadyForApproval()\n(soumis + 3 pièces)
+  API -> DB : status=APPROVED, approvedAt, approvedBy
+  API -> GEO : géocoder adresse → lat / lng
+  GEO --> API : coordonnées
+  API -> DB : UPDATE latitude, longitude
+  API -> NOTIF : BUSINESS_APPROVED → owner
+  API --> ADM : café visible aux fans
+  deactivate API
+  NOTIF --> Owner : « Votre café est en ligne »
+
+else **extend refus** — dossier non conforme
+  Admin -> ADM : Rejeter + motif
+  ADM -> API : POST reject { reason }
+  activate API
+  API -> DB : status=REJECTED, rejectionReason\nverificationComplete=false
+  API -> NOTIF : BUSINESS_REJECTED → owner
+  API --> ADM : rejeté
+  deactivate API
+  NOTIF --> Owner : motif du refus (peut corriger et resoumettre)
+end
+
+note over Owner, NOTIF
+  **Règle produit**
+  GET /businesses public et POST /fan/bookings
+  ne voient que BusinessStatus.APPROVED.
+end note
+
+legend right
+  |= Cas UML |= Type |= Condition |
+  | Déposer documents | include de Soumettre | 3 pièces obligatoires |
+  | Consulter dossier | include de Traiter | admin lit avant de décider |
+  | Approuver | extend de Traiter | dossier complet et conforme |
+  | Rejeter | extend de Traiter | pièce manquante / illisible / doute |
+endlegend
+
+@enduml

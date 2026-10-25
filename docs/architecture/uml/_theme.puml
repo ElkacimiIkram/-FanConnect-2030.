@@ -1,0 +1,9 @@
+' FanConnect 2030 — thème UML commun (inclus si rendu local)
+' Les diagrammes autonomes dupliquent le skinparam pour Kroki / plantuml.com
+
+!define FC_GREEN #0F9F58
+!define FC_DARK #1A2332
+!define FC_SLATE #F8FAFC
+!define FC_NOTE #FFFBEB
+!define FC_ENUM #ECFDF3
+!define FC_EXT #DBEAFE

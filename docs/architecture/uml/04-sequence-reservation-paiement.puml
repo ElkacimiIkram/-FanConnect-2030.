@@ -1,0 +1,139 @@
+@startuml FanConnect_2030_Sequence_Reservation
+title Diagramme de séquence — Réservation + paiement Stripe + ticket QR\nScénario principal Fan  ·  UML 2.5
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer include : Auth, match, café, dispo, paiement, ticket    ·    Commission plateforme = 25 %
+
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam maxMessageSize 240
+skinparam ParticipantPadding 10
+skinparam sequenceMessageAlign center
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+  BoxBackgroundColor #F8FAFC
+  BoxBorderColor #1A2332
+}
+
+actor Fan
+participant "Frontend React" as UI
+participant "API Spring Boot\nBookingService" as API
+database "PostgreSQL" as DB
+participant "Stripe" as Stripe
+participant "TicketPdfService\nZXing + OpenPDF" as PDF
+
+== Préconditions : fan authentifié (JWT) + café APPROVED ==
+
+Fan -> UI : choisit un match
+UI -> API : GET /matches
+API -> DB : SELECT football_matches
+DB --> API : liste (sync football-data.org)
+API --> UI : matchs
+
+Fan -> UI : choisit un café + espace
+UI -> API : GET /businesses + occupation
+API --> UI : cafés APPROVED + niveau VERT/ORANGE/ROUGE
+
+Fan -> UI : choisit une table et partySize
+UI -> API : GET tables disponibles (business, space, match)
+API -> DB : table active ? déjà réservée PENDING/CONFIRMED pour ce match ?
+DB --> API : liste + available
+API --> UI : tables
+
+== Création de la réservation (PENDING) ==
+Fan -> UI : confirmer la réservation
+UI -> API : POST /fan/bookings
+activate API
+
+API -> API : JWT → User fan
+API -> DB : Business APPROVED ? Space ? Table active ?
+API -> DB : Match SCHEDULED/LIVE (pas FINISHED/CANCELLED) ?
+API -> API : partySize ≤ table.capacity ?
+
+alt table déjà prise ou match indisponible ou partySize trop grand
+  API --> UI : 400 BusinessException
+else OK
+  API -> API : PaymentCalculator\nfee = prix × 0,25\npayout = prix − fee
+  API -> DB : INSERT Reservation status=PENDING
+  API -> DB : INSERT Payment status=PENDING, MAD
+  DB --> API : reservationId
+  API --> UI : Reservation PENDING
+end
+deactivate API
+
+== Paiement ==
+UI -> API : POST /fan/bookings/{id}/payment-intent
+activate API
+API -> DB : Reservation du fan + status PENDING ?
+
+alt Stripe configuré (sk_ + pk_)
+  API -> Stripe : PaymentIntent.create\namount en centimes, currency=MAD\nmetadata.reservationId
+  activate Stripe
+  Stripe --> API : clientSecret + paymentIntentId
+  deactivate Stripe
+  API -> DB : UPDATE Payment.stripePaymentIntentId
+  API --> UI : clientSecret + publishableKey
+  deactivate API
+  Fan -> UI : saisit la carte (Stripe.js — PCI-DSS)
+  UI -> Stripe : confirmer le PaymentIntent
+  activate Stripe
+  Stripe --> UI : status = succeeded
+  deactivate Stripe
+  UI -> API : POST /fan/bookings/{id}/pay { paymentIntentId }
+  activate API
+  API -> Stripe : PaymentIntent.retrieve(id)
+  activate Stripe
+  Stripe --> API : succeeded + metadata.reservationId
+  deactivate Stripe
+  API -> API : metadata == reservationId ? sinon 400
+else Stripe absent  <<extend : paiement simulé>>
+  API --> UI : stripeEnabled = false
+  deactivate API
+  UI -> API : POST /fan/bookings/{id}/pay
+  activate API
+  API -> API : paymentMethod = SIMULATED
+end
+
+API -> DB : Payment.status = PAID, paidAt = now
+API -> API : ticketCode = "FC-" + UUID[0..8]
+API -> DB : Reservation.status = CONFIRMED, ticketCode
+API -> API : notifier fan + owner + admin (commission 25 %)
+API --> UI : PaymentResponse + ticketCode
+deactivate API
+
+== Ticket QR ==
+Fan -> UI : voir / télécharger le ticket  <<extend : PDF>>
+UI -> API : GET /fan/bookings/{id}/ticket.pdf
+activate API
+API -> PDF : generateTicketPdf(reservation)
+activate PDF
+PDF -> PDF : QR payload =\nFANCONNECT|TICKET|FC-XXXXXXXX
+PDF --> API : bytes PDF
+deactivate PDF
+API --> UI : application/pdf
+deactivate API
+UI --> Fan : ticket + QR à présenter au café
+
+legend right
+  |= Fragment |= Condition |
+  | alt table / match | Contrôles métier avant INSERT |
+  | alt Stripe / simulé | Clés sk_ et pk_ présentes ? |
+  | Vérif Stripe côté serveur | On ne fait **pas** confiance au front |
+  | Ticket | Généré **uniquement** si Payment = PAID |
+endlegend
+
+@enduml

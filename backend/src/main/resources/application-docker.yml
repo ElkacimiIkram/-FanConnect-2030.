@@ -1,0 +1,33 @@
+# =============================================================================
+# Docker profile — backend container talking to postgres service
+# Activate: SPRING_PROFILES_ACTIVE=docker (set in docker-compose.yml)
+# =============================================================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:fanconnect}
+    username: ${DB_USER:fanconnect}
+    password: ${DB_PASSWORD:fanconnect_secret}
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+fanconnect:
+  ai:
+    enabled: ${AI_SERVICE_ENABLED:true}
+    base-url: ${AI_SERVICE_URL:http://ai-service:8000}
+  football:
+    demo-matches: ${FANCONNECT_DEMO_MATCHES:true}
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost}
+
+logging:
+  level:
+    com.fanconnect: INFO
+    org.hibernate.SQL: WARN

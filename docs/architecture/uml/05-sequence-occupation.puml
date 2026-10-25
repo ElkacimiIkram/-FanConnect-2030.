@@ -1,0 +1,117 @@
+@startuml FanConnect_2030_Sequence_Occupation
+title Diagramme de séquence — Calcul de l'occupation\nOccupancyEngine : rapport propriétaire + réservations  ·  UML 2.5
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer Rapport owner frais ≤ 15 min = vérité terrain    ·    Sinon estimation pondérée 85 % / 60 %
+
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam maxMessageSize 260
+skinparam ParticipantPadding 10
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+}
+
+actor "Fan / Owner" as U
+participant "Frontend" as UI
+participant "BusinessOccupancyService" as OCC
+database "PostgreSQL" as DB
+participant "OccupancyEngine" as ENG
+participant "Service IA\n(RandomForest)" as AI
+
+== Collecte des signaux (café APPROVED + match) ==
+U -> UI : afficher occupation du café pour un match
+UI -> OCC : GET occupancy(businessId, matchId)
+activate OCC
+
+OCC -> DB : SUM partySize WHERE CHECKED_IN
+DB --> OCC : checkedIn
+OCC -> DB : SUM partySize WHERE CONFIRMED
+DB --> OCC : confirmed
+OCC -> DB : SUM partySize WHERE PENDING
+DB --> OCC : pending
+OCC -> DB : dernier BusinessLiveOccupancy\n(business + match)
+DB --> OCC : ownerReported, reportedAt  (ou null)
+
+OCC -> ENG : computeBreakdown(capa, checkedIn,\nconfirmed, pending, liveReport)
+activate ENG
+
+ENG -> ENG : projectedConfirmed = round(confirmed × 0,85)
+ENG -> ENG : projectedPending   = round(pending × 0,60)
+ENG -> ENG : reservationOnly    = checkedIn + projectedConfirmed + projectedPending
+ENG -> ENG : fresh = (now − reportedAt) ≤ 15 min
+
+alt rapport propriétaire FRAIS (≤ 15 min)
+  ENG -> ENG : effective = ownerReported
+  ENG -> ENG : walkIn = max(0, ownerReported − checkedIn)
+  ENG -> ENG : peak = min(capa, ownerReported + projectedConfirmed)
+  note right
+    Le proprio voit la salle réelle
+    (walk-in inclus).
+    C'est la **vérité terrain**.
+  end note
+else rapport absent ou trop vieux
+  ENG -> ENG : effective = reservationOnly
+  opt vieux rapport existe encore
+    ENG -> ENG : effective = max(estimation, ownerReported)
+  end
+  ENG -> ENG : peak = min(capa, effective + projectedConfirmed)
+  note right
+    On ne compte pas 100 % des gens :
+    15 % des confirmés peuvent ne pas venir,
+    40 % des PENDING peuvent ne pas payer.
+  end note
+end
+
+ENG -> ENG : effective = min(effective, capa)
+ENG -> ENG : % = (effective / capa) × 100
+ENG -> ENG : niveau = VERT ≤50 | ORANGE ≤80 | ROUGE
+ENG --> OCC : OccupancyBreakdown
+deactivate ENG
+
+== Prédiction (extend : IA si disponible) ==
+opt service IA joignable
+  OCC -> AI : predict(breakdown, historique, match)
+  activate AI
+  AI --> OCC : peak, risque LOW/MEDIUM/HIGH, timeline
+  deactivate AI
+else fallback heuristique
+  OCC -> OCC : +12 CDM, +8 week-end,\n+6 soirée, historique 30 j, vitesse check-in
+end
+
+OCC --> UI : %  ·  niveau  ·  places libres  ·  prédiction
+deactivate OCC
+UI --> U : jauge VERT / ORANGE / ROUGE
+
+== Mise à jour live (owner) ==
+U -> UI : saisit le nombre de clients présents
+UI -> OCC : PUT live occupancy (OWNER_MANUAL)
+OCC -> DB : INSERT BusinessLiveOccupancy (reportedAt = now)
+note over OCC, DB
+  Au check-in QR : source = CHECK_IN_AUTO
+  (on ajoute partySize au compteur)
+end note
+
+legend right
+  |= Constante |= Valeur |= Rôle |
+  | ARRIVAL_RATE | 0,85 | % des CONFIRMED encore attendus |
+  | PAYMENT_RATE | 0,60 | % des PENDING qui paieront |
+  | FRESHNESS | 15 min | Durée de validité du comptage owner |
+  | GREEN / ORANGE / RED | 50 % / 80 % | Seuil visuel fan & owner |
+endlegend
+
+@enduml

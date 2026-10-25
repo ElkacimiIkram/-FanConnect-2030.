@@ -1,0 +1,59 @@
+# =============================================================================
+# Development profile — local machine with PostgreSQL Docker on localhost:5433
+# (5433 évite le conflit avec un PostgreSQL local sur 5432)
+# Activate: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+# Port 9090 avoids conflict with Jenkins (8080) and XAMPP/Apache (8081)
+# =============================================================================
+
+server:
+  port: 9090
+
+spring:
+  config:
+    import: optional:file:../.env[.properties]
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:fanconnect}
+    username: ${DB_USER:fanconnect}
+    password: ${DB_PASSWORD:fanconnect_secret}
+    hikari:
+      maximum-pool-size: 5
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    # Dev: a modified SQL file must not block startup (scripts/start-backend.bat also runs repair).
+    validate-on-migrate: false
+
+  jpa:
+    hibernate:
+      # update: auto-adds new columns (e.g. city) in dev; Flyway handles role migrations
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+fanconnect:
+  ai:
+    enabled: ${AI_SERVICE_ENABLED:true}
+    base-url: ${AI_SERVICE_URL:http://localhost:8000}
+  football:
+    demo-matches: true
+
+app:
+  cors:
+    allowed-origins: http://localhost:5173,http://127.0.0.1:5173,http://localhost,http://localhost:80
+  payment:
+    commission-rate: 0.25
+    mode: ${PAYMENT_MODE:stripe}
+    stripe-secret-key: ${STRIPE_SECRET_KEY:}
+    stripe-publishable-key: ${STRIPE_PUBLISHABLE_KEY:}
+
+logging:
+  file:
+    name: logs/backend-dev.log
+  level:
+    com.fanconnect: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

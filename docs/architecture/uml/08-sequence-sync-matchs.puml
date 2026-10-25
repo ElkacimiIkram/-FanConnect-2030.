@@ -1,0 +1,104 @@
+@startuml FanConnect_2030_Sequence_Matchs
+title Diagramme de séquence — API des matchs (football-data.org)\nMatchDataSyncScheduler + FootballDataClient  ·  UML 2.5
+
+header FanConnect 2030  |  IGA · PFE 2025/2026
+footer Upsert par externalId    ·    Cache live 10 s / jour 15 s    ·    Fenêtre glissante J → J+7
+
+autonumber
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam dpi 150
+skinparam defaultFontName Arial
+skinparam maxMessageSize 240
+skinparam ParticipantPadding 10
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor #D97706
+  FontSize 11
+}
+skinparam sequence {
+  LifeLineBorderColor #1A2332
+  LifeLineBackgroundColor #F8FAFC
+  ActorBorderColor #0F9F58
+  ActorBackgroundColor #ECFDF3
+  ParticipantBorderColor #1A2332
+  ParticipantBackgroundColor #F8FAFC
+  ArrowColor #0F9F58
+}
+
+actor Fan
+participant "Frontend\nMatch Center" as UI
+participant "MatchController" as C
+participant "MatchDataSyncScheduler" as SCH
+participant "FootballDataClient" as CLI
+participant "football-data.org\nAPI v4" as EXT
+database "PostgreSQL\ncompetitions / football_matches" as DB
+
+== Synchronisation périodique (backend) ==
+loop toutes les 60 s  (live-sync)
+  SCH -> CLI : refreshDynamicWindow(7 jours)
+  activate CLI
+  alt FOOTBALL_DATA_API_KEY absente
+    CLI --> SCH : 0 match (skip)
+  else clé présente
+    loop chaque jour J .. J+7
+      CLI -> CLI : cache date encore valide ?
+      opt cache expiré (15 s aujourd'hui / 30 s sinon)
+        CLI -> EXT : GET /matches?dateFrom&dateTo
+        EXT --> CLI : JSON matchs
+      end
+    end
+    CLI -> EXT : GET /matches?status=LIVE,IN_PLAY,PAUSED
+    EXT --> CLI : matchs live
+    CLI --> SCH : RemoteMatch[]
+    deactivate CLI
+    SCH -> DB : upsert par externalId\n(équipes, score, minute, statut, groupe)
+    note right
+      Si le match existe → UPDATE
+      Sinon → INSERT
+      lastSyncedAt = now
+    end note
+  end
+end
+
+loop toutes les 5 min  (compétitions actives)
+  SCH -> CLI : syncAllActiveCompetitions()
+  CLI -> EXT : GET /competitions/{WC|CL|...}/matches
+  EXT --> CLI : calendrier
+  SCH -> DB : upsert (filtre compétitions autorisées)
+end
+
+== Consultation Fan (lecture de NOTRE base) ==
+Fan -> UI : ouvre le Match Center
+UI -> C : GET /matches
+activate C
+C -> DB : SELECT matchs à venir
+DB --> C : FootballMatch[]
+C --> UI : liste (home, away, date, statut)
+deactivate C
+
+Fan -> UI : détail live
+UI -> C : GET /matches/live/{externalId}
+C -> CLI : fetchMatchDetail
+CLI -> EXT : GET /matches/{id}
+EXT --> CLI : buts, compos, score
+CLI --> C : MatchDetailResponse
+C --> UI : fiche live
+
+opt API externe down
+  note over UI, DB
+    Le Match Center continue d'afficher
+    les dernières données synchronisées
+    en PostgreSQL (résilience).
+  end note
+end
+
+legend right
+  |= Élément |= Choix de conception |
+  | Acteur secondaire | football-data.org fournit les faits sportifs |
+  | Upsert | Une seule source de vérité locale (externalId) |
+  | Cache | Respect du quota API |
+  | Fan lit PostgreSQL | L'UI ne dépend pas du live de l'API à chaque clic |
+endlegend
+
+@enduml
